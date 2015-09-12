@@ -68,7 +68,9 @@ void CPTPopCGContext(void)
  **/
 CGContextRef CPTGetCurrentContext(void)
 {
-    return [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+
+    return context;
 }
 
 #pragma mark -

@@ -1051,7 +1051,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CorePlot-CocoaTouch" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1289,6 +1289,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -1298,6 +1299,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = "$(PROJECT_DIR)/../build";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1315,6 +1317,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SYMROOT = "$(PROJECT_DIR)/../build";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
