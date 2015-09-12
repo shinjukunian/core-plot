@@ -1,5 +1,9 @@
 #import "CPTScatterPlotTests.h"
 
+#import "CPTPlotRange.h"
+#import "CPTScatterPlot.h"
+#import "CPTXYPlotSpace.h"
+
 @interface CPTScatterPlot(Testing)
 
 -(void)calculatePointsToDraw:(BOOL *)pointDrawFlags forPlotSpace:(CPTXYPlotSpace *)xyPlotSpace includeVisiblePointsOnly:(BOOL)visibleOnly numberOfPoints:(NSUInteger)dataCount;
@@ -25,8 +29,8 @@
     [self.plot setYValues:yValues];
     self.plot.cachePrecision = CPTPlotCachePrecisionDouble;
 
-    CPTPlotRange *xPlotRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromInteger(0) length:CPTDecimalFromInteger(1)];
-    CPTPlotRange *yPlotRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromInteger(0) length:CPTDecimalFromInteger(1)];
+    CPTPlotRange *xPlotRange = [CPTPlotRange plotRangeWithLocation:@0.0 length:@1.0];
+    CPTPlotRange *yPlotRange = [CPTPlotRange plotRangeWithLocation:@0.0 length:@1.0];
     self.plotSpace        = [[CPTXYPlotSpace alloc] init];
     self.plotSpace.xRange = xPlotRange;
     self.plotSpace.yRange = yPlotRange;
@@ -50,7 +54,7 @@
     [self.plot setXValues:values];
     [self.plot calculatePointsToDraw:drawFlags forPlotSpace:self.plotSpace includeVisiblePointsOnly:NO numberOfPoints:values.count];
     for ( NSUInteger i = 0; i < 5; i++ ) {
-        STAssertTrue(drawFlags[i], @"Test that in range points are drawn (%g).", inRangeValues[i]);
+        XCTAssertTrue(drawFlags[i], @"Test that in range points are drawn (%g).", inRangeValues[i]);
     }
 }
 
@@ -66,7 +70,7 @@
     [self.plot setXValues:values];
     [self.plot calculatePointsToDraw:drawFlags forPlotSpace:self.plotSpace includeVisiblePointsOnly:YES numberOfPoints:values.count];
     for ( NSUInteger i = 0; i < 5; i++ ) {
-        STAssertTrue(drawFlags[i], @"Test that in range points are drawn (%g).", inRangeValues[i]);
+        XCTAssertTrue(drawFlags[i], @"Test that in range points are drawn (%g).", inRangeValues[i]);
     }
 }
 
@@ -82,7 +86,7 @@
     [self.plot setXValues:values];
     [self.plot calculatePointsToDraw:drawFlags forPlotSpace:self.plotSpace includeVisiblePointsOnly:NO numberOfPoints:values.count];
     for ( NSUInteger i = 0; i < 5; i++ ) {
-        STAssertFalse(drawFlags[i], @"Test that out of range points are not drawn (%g).", inRangeValues[i]);
+        XCTAssertFalse(drawFlags[i], @"Test that out of range points are not drawn (%g).", inRangeValues[i]);
     }
 }
 
@@ -98,7 +102,7 @@
     [self.plot setXValues:values];
     [self.plot calculatePointsToDraw:drawFlags forPlotSpace:self.plotSpace includeVisiblePointsOnly:YES numberOfPoints:values.count];
     for ( NSUInteger i = 0; i < 5; i++ ) {
-        STAssertFalse(drawFlags[i], @"Test that out of range points are not drawn (%g).", inRangeValues[i]);
+        XCTAssertFalse(drawFlags[i], @"Test that out of range points are not drawn (%g).", inRangeValues[i]);
     }
 }
 
@@ -114,7 +118,7 @@
     [self.plot setXValues:values];
     [self.plot calculatePointsToDraw:drawFlags forPlotSpace:self.plotSpace includeVisiblePointsOnly:NO numberOfPoints:values.count];
     for ( NSUInteger i = 0; i < 5; i++ ) {
-        STAssertTrue(drawFlags[i], @"Test that out of range points in different regions get included (%g).", inRangeValues[i]);
+        XCTAssertTrue(drawFlags[i], @"Test that out of range points in different regions get included (%g).", inRangeValues[i]);
     }
 }
 
@@ -130,7 +134,7 @@
     [self.plot setXValues:values];
     [self.plot calculatePointsToDraw:drawFlags forPlotSpace:self.plotSpace includeVisiblePointsOnly:YES numberOfPoints:values.count];
     for ( NSUInteger i = 0; i < 5; i++ ) {
-        STAssertFalse(drawFlags[i], @"Test that out of range points in different regions get included (%g).", inRangeValues[i]);
+        XCTAssertFalse(drawFlags[i], @"Test that out of range points in different regions get included (%g).", inRangeValues[i]);
     }
 }
 
@@ -148,10 +152,10 @@
     [self.plot calculatePointsToDraw:drawFlags forPlotSpace:self.plotSpace includeVisiblePointsOnly:NO numberOfPoints:values.count];
     for ( NSUInteger i = 0; i < 5; i++ ) {
         if ( expected[i] ) {
-            STAssertTrue(drawFlags[i], @"Test that correct points included when some are in range, others out (%g).", inRangeValues[i]);
+            XCTAssertTrue(drawFlags[i], @"Test that correct points included when some are in range, others out (%g).", inRangeValues[i]);
         }
         else {
-            STAssertFalse(drawFlags[i], @"Test that correct points included when some are in range, others out (%g).", inRangeValues[i]);
+            XCTAssertFalse(drawFlags[i], @"Test that correct points included when some are in range, others out (%g).", inRangeValues[i]);
         }
     }
 }
@@ -169,10 +173,10 @@
     [self.plot calculatePointsToDraw:drawFlags forPlotSpace:self.plotSpace includeVisiblePointsOnly:YES numberOfPoints:values.count];
     for ( NSUInteger i = 0; i < 5; i++ ) {
         if ( [self.plotSpace.xRange compareToNumber:@(inRangeValues[i])] == CPTPlotRangeComparisonResultNumberInRange ) {
-            STAssertTrue(drawFlags[i], @"Test that correct points included when some are in range, others out (%g).", inRangeValues[i]);
+            XCTAssertTrue(drawFlags[i], @"Test that correct points included when some are in range, others out (%g).", inRangeValues[i]);
         }
         else {
-            STAssertFalse(drawFlags[i], @"Test that correct points included when some are in range, others out (%g).", inRangeValues[i]);
+            XCTAssertFalse(drawFlags[i], @"Test that correct points included when some are in range, others out (%g).", inRangeValues[i]);
         }
     }
 }
@@ -191,10 +195,10 @@
     [self.plot calculatePointsToDraw:drawFlags forPlotSpace:self.plotSpace includeVisiblePointsOnly:NO numberOfPoints:values.count];
     for ( NSUInteger i = 0; i < 5; i++ ) {
         if ( expected[i] ) {
-            STAssertTrue(drawFlags[i], @"Test that correct points included when some are in range, others out, crossing range (%g).", inRangeValues[i]);
+            XCTAssertTrue(drawFlags[i], @"Test that correct points included when some are in range, others out, crossing range (%g).", inRangeValues[i]);
         }
         else {
-            STAssertFalse(drawFlags[i], @"Test that correct points included when some are in range, others out, crossing range (%g).", inRangeValues[i]);
+            XCTAssertFalse(drawFlags[i], @"Test that correct points included when some are in range, others out, crossing range (%g).", inRangeValues[i]);
         }
     }
 }
@@ -212,10 +216,10 @@
     [self.plot calculatePointsToDraw:drawFlags forPlotSpace:self.plotSpace includeVisiblePointsOnly:YES numberOfPoints:values.count];
     for ( NSUInteger i = 0; i < 5; i++ ) {
         if ( [self.plotSpace.xRange compareToNumber:@(inRangeValues[i])] == CPTPlotRangeComparisonResultNumberInRange ) {
-            STAssertTrue(drawFlags[i], @"Test that correct points included when some are in range, others out, crossing range (%g).", inRangeValues[i]);
+            XCTAssertTrue(drawFlags[i], @"Test that correct points included when some are in range, others out, crossing range (%g).", inRangeValues[i]);
         }
         else {
-            STAssertFalse(drawFlags[i], @"Test that correct points included when some are in range, others out, crossing range (%g).", inRangeValues[i]);
+            XCTAssertFalse(drawFlags[i], @"Test that correct points included when some are in range, others out, crossing range (%g).", inRangeValues[i]);
         }
     }
 }

@@ -6,7 +6,7 @@
 /// @cond
 @interface CPTAnnotationHostLayer()
 
-@property (nonatomic, readwrite, strong) NSMutableArray *mutableAnnotations;
+@property (nonatomic, readwrite, strong, nonnull) NSMutableArray *mutableAnnotations;
 
 @end
 
@@ -81,7 +81,13 @@
 -(instancetype)initWithCoder:(NSCoder *)coder
 {
     if ( (self = [super initWithCoder:coder]) ) {
-        mutableAnnotations = [[coder decodeObjectForKey:@"CPTAnnotationHostLayer.mutableAnnotations"] mutableCopy];
+        NSArray *annotations = [coder decodeObjectForKey:@"CPTAnnotationHostLayer.mutableAnnotations"];
+        if ( annotations ) {
+            mutableAnnotations = [annotations mutableCopy];
+        }
+        else {
+            mutableAnnotations = [[NSMutableArray alloc] init];
+        }
     }
     return self;
 }
@@ -116,13 +122,15 @@
  **/
 -(void)removeAnnotation:(CPTAnnotation *)annotation
 {
-    if ( [self.mutableAnnotations containsObject:annotation] ) {
-        annotation.annotationHostLayer = nil;
-        [self.mutableAnnotations removeObject:annotation];
-    }
-    else {
-        CPTAnnotationHostLayer *hostLayer = annotation.annotationHostLayer;
-        [NSException raise:CPTException format:@"Tried to remove CPTAnnotation from %@. Host layer was %@.", self, hostLayer];
+    if ( annotation ) {
+        if ( [self.mutableAnnotations containsObject:annotation] ) {
+            annotation.annotationHostLayer = nil;
+            [self.mutableAnnotations removeObject:annotation];
+        }
+        else {
+            CPTAnnotationHostLayer *hostLayer = annotation.annotationHostLayer;
+            [NSException raise:CPTException format:@"Tried to remove CPTAnnotation from %@. Host layer was %@.", self, hostLayer];
+        }
     }
 }
 

@@ -27,7 +27,7 @@ static const double precision = 1.0e-6;
     // starting layer positions for each test
     self.positions = @[@10.49999, @10.5, @10.50001, @10.99999, @11.0, @11.00001];
 
-    CPTLayer *newLayer = [(CPTLayer *)[CPTLayer alloc] initWithFrame : CPTRectMake(0.0, 0.0, 99.0, 99.0)];
+    CPTLayer *newLayer = [[CPTLayer alloc] initWithFrame:CPTRectMake(0.0, 0.0, 99.0, 99.0)];
 
     self.layer = newLayer;
 }
@@ -151,10 +151,12 @@ static const double precision = 1.0e-6;
         CGPoint alignedPoint = self.layer.position;
         CGFloat expected     = ( (NSNumber *)(expectedValues[i]) ).cgFloatValue;
 
-        NSString *message = [NSString stringWithFormat:@"pixelAlign at %%@ = %f with scale %g and anchor %@", position, scale, CPTStringFromPoint(anchor)];
+        NSString *errMessage;
+        errMessage = [NSString stringWithFormat:@"pixelAlign at x = %g with scale %g and anchor %@", position, scale, CPTStringFromPoint(anchor)];
+        XCTAssertEqualWithAccuracy(alignedPoint.x, expected, precision, @"%@", errMessage);
 
-        STAssertEqualsWithAccuracy(alignedPoint.x, expected, precision, message, @"x");
-        STAssertEqualsWithAccuracy(alignedPoint.y, expected, precision, message, @"y");
+        errMessage = [NSString stringWithFormat:@"pixelAlign at y = %g with scale %g and anchor %@", position, scale, CPTStringFromPoint(anchor)];
+        XCTAssertEqualWithAccuracy(alignedPoint.y, expected, precision, @"%@", errMessage);
     }
 }
 

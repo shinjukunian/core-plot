@@ -9,12 +9,12 @@
 /// @cond
 @interface CPTNumericData()
 
-@property (nonatomic, readwrite, copy) NSData *data;
+@property (nonatomic, readwrite, copy, nonnull) NSData *data;
 @property (nonatomic, readwrite, assign) CPTNumericDataType dataType;
-@property (nonatomic, readwrite, copy) NSArray *shape;
+@property (nonatomic, readwrite, copy, nonnull) NSArray *shape;
 @property (nonatomic, readwrite, assign) CPTDataOrder dataOrder;
 
--(void)commonInitWithData:(NSData *)newData dataType:(CPTNumericDataType)newDataType shape:(NSArray *)shapeArray dataOrder:(CPTDataOrder)order;
+-(void)commonInitWithData:(nonnull NSData *)newData dataType:(CPTNumericDataType)newDataType shape:(nullable NSArray *)shapeArray dataOrder:(CPTDataOrder)order;
 -(NSUInteger)sampleIndex:(NSUInteger)idx indexList:(va_list)indexList;
 -(NSData *)dataFromArray:(NSArray *)newData dataType:(CPTNumericDataType)newDataType;
 
@@ -270,14 +270,10 @@
                    dataType:(CPTNumericDataType)newDataType
                       shape:(NSArray *)shapeArray
 {
-    if ( (self = [super init]) ) {
-        [self commonInitWithData:newData
-                        dataType:newDataType
-                           shape:shapeArray
-                       dataOrder:CPTDataOrderRowsFirst];
-    }
-
-    return self;
+    return [self initWithData:newData
+                     dataType:newDataType
+                        shape:shapeArray
+                    dataOrder:CPTDataOrderRowsFirst];
 }
 
 /** @brief Initializes a newly allocated CPTNumericData object with the provided data.
@@ -286,9 +282,9 @@
  *  @param shapeArray The shape of the data buffer array. Multi-dimensional data arrays will be assumed to be stored in #CPTDataOrderRowsFirst.
  *  @return The initialized CPTNumericData instance.
  **/
--(id) initWithData:(NSData *)newData
-    dataTypeString:(NSString *)newDataTypeString
-             shape:(NSArray *)shapeArray
+-(instancetype)initWithData:(NSData *)newData
+             dataTypeString:(NSString *)newDataTypeString
+                      shape:(NSArray *)shapeArray
 {
     return [self initWithData:newData
                      dataType:CPTDataTypeWithDataTypeString(newDataTypeString)
@@ -362,10 +358,10 @@
  *  @param order The data order for a multi-dimensional data array (row-major or column-major).
  *  @return The initialized CPTNumericData instance.
  **/
--(id) initWithData:(NSData *)newData
-    dataTypeString:(NSString *)newDataTypeString
-             shape:(NSArray *)shapeArray
-         dataOrder:(CPTDataOrder)order
+-(instancetype)initWithData:(NSData *)newData
+             dataTypeString:(NSString *)newDataTypeString
+                      shape:(NSArray *)shapeArray
+                  dataOrder:(CPTDataOrder)order
 {
     return [self initWithData:newData
                      dataType:CPTDataTypeWithDataTypeString(newDataTypeString)
@@ -418,6 +414,13 @@
 }
 
 /// @cond
+
+-(instancetype)init
+{
+    return [self initWithData:[NSData data]
+                     dataType:CPTDataType( CPTFloatingPointDataType, sizeof(double), CFByteOrderGetCurrent() )
+                        shape:nil];
+}
 
 -(void)commonInitWithData:(NSData *)newData
                  dataType:(CPTNumericDataType)newDataType
@@ -612,19 +615,19 @@
             case CPTIntegerDataType:
                 switch ( self.sampleBytes ) {
                     case sizeof(int8_t):
-                        result = @(*(int8_t *)[self samplePointer:sample]);
+                        result = @(*(const int8_t *)[self samplePointer:sample]);
                         break;
 
                     case sizeof(int16_t):
-                        result = @(*(int16_t *)[self samplePointer:sample]);
+                        result = @(*(const int16_t *)[self samplePointer:sample]);
                         break;
 
                     case sizeof(int32_t):
-                        result = @(*(int32_t *)[self samplePointer:sample]);
+                        result = @(*(const int32_t *)[self samplePointer:sample]);
                         break;
 
                     case sizeof(int64_t):
-                        result = @(*(int64_t *)[self samplePointer:sample]);
+                        result = @(*(const int64_t *)[self samplePointer:sample]);
                         break;
                 }
                 break;
@@ -632,19 +635,19 @@
             case CPTUnsignedIntegerDataType:
                 switch ( self.sampleBytes ) {
                     case sizeof(uint8_t):
-                        result = @(*(uint8_t *)[self samplePointer:sample]);
+                        result = @(*(const uint8_t *)[self samplePointer:sample]);
                         break;
 
                     case sizeof(uint16_t):
-                        result = @(*(uint16_t *)[self samplePointer:sample]);
+                        result = @(*(const uint16_t *)[self samplePointer:sample]);
                         break;
 
                     case sizeof(uint32_t):
-                        result = @(*(uint32_t *)[self samplePointer:sample]);
+                        result = @(*(const uint32_t *)[self samplePointer:sample]);
                         break;
 
                     case sizeof(uint64_t):
-                        result = @(*(uint64_t *)[self samplePointer:sample]);
+                        result = @(*(const uint64_t *)[self samplePointer:sample]);
                         break;
                 }
                 break;
@@ -652,11 +655,11 @@
             case CPTFloatingPointDataType:
                 switch ( self.sampleBytes ) {
                     case sizeof(float):
-                        result = @(*(float *)[self samplePointer:sample]);
+                        result = @(*(const float *)[self samplePointer:sample]);
                         break;
 
                     case sizeof(double):
-                        result = @(*(double *)[self samplePointer:sample]);
+                        result = @(*(const double *)[self samplePointer:sample]);
                         break;
                 }
                 break;
@@ -664,11 +667,11 @@
             case CPTComplexFloatingPointDataType:
                 switch ( self.sampleBytes ) {
                     case sizeof(float complex):
-                        result = @( crealf(*(float complex *)[self samplePointer:sample]) );
+                        result = @( crealf(*(const float complex *)[self samplePointer:sample]) );
                         break;
 
                     case sizeof(double complex):
-                        result = @( creal(*(double complex *)[self samplePointer:sample]) );
+                        result = @( creal(*(const double complex *)[self samplePointer:sample]) );
                         break;
                 }
                 break;
@@ -676,7 +679,7 @@
             case CPTDecimalDataType:
                 switch ( self.sampleBytes ) {
                     case sizeof(NSDecimal):
-                        result = [NSDecimalNumber decimalNumberWithDecimal:*(NSDecimal *)[self samplePointer:sample]];
+                        result = [NSDecimalNumber decimalNumberWithDecimal:*(const NSDecimal *)[self samplePointer:sample]];
                         break;
                 }
                 break;
@@ -720,10 +723,10 @@
  *  @param sample The zero-based index into the sample array. The array is treated as if it only has one dimension.
  *  @return A pointer to the sample or @NULL if the sample index is out of bounds.
  **/
--(void *)samplePointer:(NSUInteger)sample
+-(const void *)samplePointer:(NSUInteger)sample
 {
     if ( sample < self.numberOfSamples ) {
-        return (void *)( (char *)self.bytes + sample * self.sampleBytes );
+        return (const void *)( (const char *)self.bytes + sample * self.sampleBytes );
     }
     else {
         return NULL;
@@ -735,7 +738,7 @@
  *  (including @par{index}) should match the @ref numberOfDimensions.
  *  @return A pointer to the sample or @NULL if any of the sample indices are out of bounds.
  **/
--(void *)samplePointerAtIndex:(NSUInteger)idx, ...
+-(const void *)samplePointerAtIndex:(NSUInteger)idx, ...
  {
     NSUInteger newIndex;
 
@@ -766,7 +769,10 @@
     NSMutableArray *samples = [[NSMutableArray alloc] initWithCapacity:sampleCount];
 
     for ( NSUInteger i = 0; i < sampleCount; i++ ) {
-        [samples addObject:[self sampleValue:i]];
+        NSNumber *sampleValue = [self sampleValue:i];
+        if ( sampleValue ) {
+            [samples addObject:sampleValue];
+        }
     }
 
     NSArray *result = [NSArray arrayWithArray:samples];
@@ -1149,8 +1155,6 @@
 
 -(void)encodeWithCoder:(NSCoder *)encoder
 {
-    //[super encodeWithCoder:encoder];
-
     if ( [encoder allowsKeyedCoding] ) {
         [encoder encodeObject:self.data forKey:@"CPTNumericData.data"];
 
@@ -1177,6 +1181,12 @@
     }
 }
 
+/// @endcond
+
+/** @brief Returns an object initialized from data in a given unarchiver.
+ *  @param decoder An unarchiver object.
+ *  @return An object initialized from data in a given unarchiver.
+ */
 -(instancetype)initWithCoder:(NSCoder *)decoder
 {
     if ( (self = [super init]) ) {
@@ -1211,7 +1221,5 @@
 
     return self;
 }
-
-/// @endcond
 
 @end

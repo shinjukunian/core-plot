@@ -37,7 +37,7 @@
     CPTMutableTextStyle *newStyle = [CPTMutableTextStyle textStyle];
 
     // Font
-    NSFont *styleFont = [attributes valueForKey:NSFontAttributeName];
+    NSFont *styleFont = attributes[NSFontAttributeName];
 
     if ( styleFont ) {
         newStyle.fontName = styleFont.fontName;
@@ -45,7 +45,7 @@
     }
 
     // Color
-    NSColor *styleColor = [attributes valueForKey:NSForegroundColorAttributeName];
+    NSColor *styleColor = attributes[NSForegroundColorAttributeName];
     if ( styleColor ) {
         // CGColor property is available in Mac OS 10.8 and later
         if ( [styleColor respondsToSelector:@selector(CGColor)] ) {
@@ -68,7 +68,7 @@
     }
 
     // Text alignment and line break mode
-    NSParagraphStyle *paragraphStyle = [attributes valueForKey:NSParagraphStyleAttributeName];
+    NSParagraphStyle *paragraphStyle = attributes[NSParagraphStyleAttributeName];
     if ( paragraphStyle ) {
         newStyle.textAlignment = (CPTTextAlignment)paragraphStyle.alignment;
         newStyle.lineBreakMode = paragraphStyle.lineBreakMode;
@@ -87,7 +87,12 @@
     NSMutableDictionary *myAttributes = [NSMutableDictionary dictionary];
 
     // Font
-    NSFont *styleFont = [NSFont fontWithName:self.fontName size:self.fontSize];
+    NSFont *styleFont  = nil;
+    NSString *fontName = self.fontName;
+
+    if ( fontName ) {
+        styleFont = [NSFont fontWithName:fontName size:self.fontSize];
+    }
 
     if ( styleFont ) {
         [myAttributes setValue:styleFont
@@ -127,7 +132,7 @@
     CPTMutableTextStyle *newStyle = [CPTMutableTextStyle textStyle];
 
     // Font
-    NSFont *styleFont = [attributes valueForKey:NSFontAttributeName];
+    NSFont *styleFont = attributes[NSFontAttributeName];
 
     if ( styleFont ) {
         newStyle.fontName = styleFont.fontName;
@@ -135,7 +140,7 @@
     }
 
     // Color
-    NSColor *styleColor = [attributes valueForKey:NSForegroundColorAttributeName];
+    NSColor *styleColor = attributes[NSForegroundColorAttributeName];
     if ( styleColor ) {
         // CGColor property is available in Mac OS 10.8 and later
         if ( [styleColor respondsToSelector:@selector(CGColor)] ) {
@@ -158,7 +163,7 @@
     }
 
     // Text alignment and line break mode
-    NSParagraphStyle *paragraphStyle = [attributes valueForKey:NSParagraphStyleAttributeName];
+    NSParagraphStyle *paragraphStyle = attributes[NSParagraphStyleAttributeName];
     if ( paragraphStyle ) {
         newStyle.textAlignment = (CPTTextAlignment)paragraphStyle.alignment;
         newStyle.lineBreakMode = paragraphStyle.lineBreakMode;
@@ -184,7 +189,12 @@
  **/
 -(CGSize)sizeWithTextStyle:(CPTTextStyle *)style
 {
-    NSFont *theFont = [NSFont fontWithName:style.fontName size:style.fontSize];
+    NSFont *theFont    = nil;
+    NSString *fontName = style.fontName;
+
+    if ( fontName ) {
+        theFont = [NSFont fontWithName:fontName size:style.fontSize];
+    }
 
     CGSize textSize;
 
@@ -222,7 +232,14 @@
     CGContextSetFillColorWithColor(context, textColor);
 
     CPTPushCGContext(context);
-    NSFont *theFont = [NSFont fontWithName:style.fontName size:style.fontSize];
+
+    NSFont *theFont    = nil;
+    NSString *fontName = style.fontName;
+
+    if ( fontName ) {
+        theFont = [NSFont fontWithName:fontName size:style.fontSize];
+    }
+
     if ( theFont ) {
         NSColor *foregroundColor                = style.color.nsColor;
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];

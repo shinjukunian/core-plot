@@ -2,6 +2,7 @@
 
 #import "CPTGraph.h"
 #import "CPTPathExtensions.h"
+#import "CPTPlatformSpecificCategories.h"
 #import "CPTPlatformSpecificFunctions.h"
 #import "CPTShadow.h"
 #import "CPTUtilities.h"
@@ -29,8 +30,8 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
 @property (nonatomic, readwrite, getter = isRenderingRecursively) BOOL renderingRecursively;
 @property (nonatomic, readwrite, assign) BOOL useFastRendering;
 
--(void)applyTransform:(CATransform3D)transform toContext:(CGContextRef)context;
--(NSString *)subLayersAtIndex:(NSUInteger)idx;
+-(void)applyTransform:(CATransform3D)transform toContext:(nonnull CGContextRef)context;
+-(nonnull NSString *)subLayersAtIndex:(NSUInteger)idx;
 
 @end
 
@@ -49,7 +50,7 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
  **/
 @implementation CPTLayer
 
-/** @property __cpt_weak CPTGraph *graph
+/** @property cpt_weak CPTGraph *graph
  *  @brief The graph for the layer.
  **/
 @synthesize graph;
@@ -200,8 +201,10 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
 
 /// @}
 
-/// @cond
-
+/** @brief Override to copy or initialize custom fields of the specified layer.
+ *  @param layer The layer from which custom fields should be copied.
+ *  @return A layer instance with any custom instance variables copied from @par{layer}.
+ */
 -(instancetype)initWithLayer:(id)layer
 {
     if ( (self = [super initWithLayer:layer]) ) {
@@ -221,6 +224,8 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
     }
     return self;
 }
+
+/// @cond
 
 -(void)dealloc
 {
@@ -255,6 +260,12 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
     // innerBorderPath
 }
 
+/// @endcond
+
+/** @brief Returns an object initialized from data in a given unarchiver.
+ *  @param coder An unarchiver object.
+ *  @return An object initialized from data in a given unarchiver.
+ */
 -(instancetype)initWithCoder:(NSCoder *)coder
 {
     if ( (self = [super initWithCoder:coder]) ) {
@@ -274,8 +285,6 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
     return self;
 }
 
-/// @endcond
-
 #pragma mark -
 #pragma mark Animation
 
@@ -293,11 +302,26 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
 
 /// @cond
 
+-(void)display
+{
+    if ( self.hidden ) {
+        return;
+    }
+    else {
+        [super display];
+    }
+}
+
 -(void)drawInContext:(CGContextRef)context
 {
-    self.useFastRendering = YES;
-    [self renderAsVectorInContext:context];
-    self.useFastRendering = NO;
+    if ( context ) {
+        self.useFastRendering = YES;
+        [self renderAsVectorInContext:context];
+        self.useFastRendering = NO;
+    }
+    else {
+        NSLog(@"%@: Tried to draw into a NULL context", self);
+    }
 }
 
 /// @endcond
@@ -716,7 +740,7 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
             return path;
         }
 
-        path                 = CreateRoundedRectPath(self.bounds, self.cornerRadius);
+        path                 = CPTCreateRoundedRectPath(self.bounds, self.cornerRadius);
         self.outerBorderPath = path;
         CGPathRelease(path);
 
@@ -830,7 +854,7 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
     if ( COREPLOT_LAYER_POSITION_CHANGE_ENABLED() ) {
         CGRect currentFrame = self.frame;
         if ( !CGRectEqualToRect( currentFrame, CGRectIntegral(self.frame) ) ) {
-            COREPLOT_LAYER_POSITION_CHANGE( (char *)class_getName([self class]),
+            COREPLOT_LAYER_POSITION_CHANGE( (const char *)class_getName([self class]),
                                             (int)lrint( ceil(currentFrame.origin.x * 1000.0) ),
                                             (int)lrint( ceil(currentFrame.origin.y * 1000.0) ),
                                             (int)lrint( ceil(currentFrame.size.width * 1000.0) ),
@@ -1040,6 +1064,18 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
     }
 
     return result;
+}
+
+/// @endcond
+
+#pragma mark -
+#pragma mark Debugging
+
+/// @cond
+
+-(id)debugQuickLookObject
+{
+    return [self imageOfLayer];
 }
 
 /// @endcond

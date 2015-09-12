@@ -32,13 +32,13 @@ NSString *const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPlotSpaceNoti
 /// @cond
 @interface CPTGraph()
 
-@property (nonatomic, readwrite, strong) NSMutableArray *plots;
-@property (nonatomic, readwrite, strong) NSMutableArray *plotSpaces;
+@property (nonatomic, readwrite, strong, nonnull) NSMutableArray *plots;
+@property (nonatomic, readwrite, strong, nonnull) NSMutableArray *plotSpaces;
 @property (nonatomic, readwrite, strong) CPTLayerAnnotation *titleAnnotation;
 @property (nonatomic, readwrite, strong) CPTLayerAnnotation *legendAnnotation;
 @property (nonatomic, readwrite, assign) BOOL inTitleUpdate;
 
--(void)plotSpaceMappingDidChange:(NSNotification *)notif;
+-(void)plotSpaceMappingDidChange:(nonnull NSNotification *)notif;
 -(CGPoint)contentAnchorForRectAnchor:(CPTRectAnchor)anchor;
 
 @end
@@ -68,7 +68,7 @@ NSString *const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPlotSpaceNoti
  **/
 @implementation CPTGraph
 
-/** @property __cpt_weak CPTGraphHostingView *hostingView
+/** @property cpt_weak CPTGraphHostingView *hostingView
  *  @brief The hosting view that contains the graph.
  **/
 @synthesize hostingView;
@@ -312,10 +312,25 @@ NSString *const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPlotSpaceNoti
 -(instancetype)initWithCoder:(NSCoder *)coder
 {
     if ( (self = [super initWithCoder:coder]) ) {
-        hostingView              = [coder decodeObjectForKey:@"CPTGraph.hostingView"];
-        plotAreaFrame            = [coder decodeObjectForKey:@"CPTGraph.plotAreaFrame"];
-        plots                    = [[coder decodeObjectForKey:@"CPTGraph.plots"] mutableCopy];
-        plotSpaces               = [[coder decodeObjectForKey:@"CPTGraph.plotSpaces"] mutableCopy];
+        hostingView   = [coder decodeObjectForKey:@"CPTGraph.hostingView"];
+        plotAreaFrame = [coder decodeObjectForKey:@"CPTGraph.plotAreaFrame"];
+
+        NSArray *plotArray = [coder decodeObjectForKey:@"CPTGraph.plots"];
+        if ( plotArray ) {
+            plots = [plotArray mutableCopy];
+        }
+        else {
+            plots = [[NSMutableArray alloc] init];
+        }
+
+        NSArray *plotSpaceArray = [coder decodeObjectForKey:@"CPTGraph.plotSpaces"];
+        if ( plotSpaceArray ) {
+            plotSpaces = [plotSpaceArray mutableCopy];
+        }
+        else {
+            plotSpaces = [[NSMutableArray alloc] init];
+        }
+
         title                    = [[coder decodeObjectForKey:@"CPTGraph.title"] copy];
         attributedTitle          = [[coder decodeObjectForKey:@"CPTGraph.attributedTitle"] copy];
         titleTextStyle           = [[coder decodeObjectForKey:@"CPTGraph.titleTextStyle"] copy];
@@ -355,12 +370,13 @@ NSString *const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPlotSpaceNoti
 
 +(BOOL)needsDisplayForKey:(NSString *)aKey
 {
-    static NSSet *keys = nil;
+    static NSSet *keys               = nil;
+    static dispatch_once_t onceToken = 0;
 
-    if ( !keys ) {
+    dispatch_once(&onceToken, ^{
         keys = [NSSet setWithArray:@[@"titleDisplacement",
                                      @"legendDisplacement"]];
-    }
+    });
 
     if ( [keys containsObject:aKey] ) {
         return YES;
@@ -381,6 +397,7 @@ NSString *const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPlotSpaceNoti
 -(void)reloadData
 {
     [self.plots makeObjectsPerformSelector:@selector(reloadData)];
+    [self.plotSpaces makeObjectsPerformSelector:@selector(removeAllCategories)];
 }
 
 /**
@@ -405,7 +422,12 @@ NSString *const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPlotSpaceNoti
  **/
 -(CPTPlot *)plotAtIndex:(NSUInteger)idx
 {
-    return (self.plots)[idx];
+    if ( idx < self.plots.count ) {
+        return (self.plots)[idx];
+    }
+    else {
+        return nil;
+    }
 }
 
 /** @brief Gets the plot with the given identifier from the plot array.
@@ -570,6 +592,8 @@ NSString *const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPlotSpaceNoti
  **/
 -(void)addPlotSpace:(CPTPlotSpace *)space
 {
+    NSParameterAssert(space);
+
     [self.plotSpaces addObject:space];
     space.graph = self;
 
@@ -839,14 +863,17 @@ NSString *const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPlotSpaceNoti
                     ( (CPTTextLayer *)theTitleAnnotation.contentLayer ).text = title;
                 }
                 else {
-                    CPTLayerAnnotation *newTitleAnnotation = [[CPTLayerAnnotation alloc] initWithAnchorLayer:self.plotAreaFrame];
-                    CPTTextLayer *newTextLayer             = [[CPTTextLayer alloc] initWithText:title style:self.titleTextStyle];
-                    newTitleAnnotation.contentLayer       = newTextLayer;
-                    newTitleAnnotation.displacement       = self.titleDisplacement;
-                    newTitleAnnotation.rectAnchor         = self.titlePlotAreaFrameAnchor;
-                    newTitleAnnotation.contentAnchorPoint = [self contentAnchorForRectAnchor:self.titlePlotAreaFrameAnchor];
-                    [self addAnnotation:newTitleAnnotation];
-                    self.titleAnnotation = newTitleAnnotation;
+                    CPTPlotAreaFrame *frameLayer = self.plotAreaFrame;
+                    if ( frameLayer ) {
+                        CPTLayerAnnotation *newTitleAnnotation = [[CPTLayerAnnotation alloc] initWithAnchorLayer:frameLayer];
+                        CPTTextLayer *newTextLayer             = [[CPTTextLayer alloc] initWithText:title style:self.titleTextStyle];
+                        newTitleAnnotation.contentLayer       = newTextLayer;
+                        newTitleAnnotation.displacement       = self.titleDisplacement;
+                        newTitleAnnotation.rectAnchor         = self.titlePlotAreaFrameAnchor;
+                        newTitleAnnotation.contentAnchorPoint = [self contentAnchorForRectAnchor:self.titlePlotAreaFrameAnchor];
+                        [self addAnnotation:newTitleAnnotation];
+                        self.titleAnnotation = newTitleAnnotation;
+                    }
                 }
             }
             else {
@@ -878,14 +905,17 @@ NSString *const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPlotSpaceNoti
                     ( (CPTTextLayer *)theTitleAnnotation.contentLayer ).attributedText = attributedTitle;
                 }
                 else {
-                    CPTLayerAnnotation *newTitleAnnotation = [[CPTLayerAnnotation alloc] initWithAnchorLayer:self.plotAreaFrame];
-                    CPTTextLayer *newTextLayer             = [[CPTTextLayer alloc] initWithAttributedText:attributedTitle];
-                    newTitleAnnotation.contentLayer       = newTextLayer;
-                    newTitleAnnotation.displacement       = self.titleDisplacement;
-                    newTitleAnnotation.rectAnchor         = self.titlePlotAreaFrameAnchor;
-                    newTitleAnnotation.contentAnchorPoint = [self contentAnchorForRectAnchor:self.titlePlotAreaFrameAnchor];
-                    [self addAnnotation:newTitleAnnotation];
-                    self.titleAnnotation = newTitleAnnotation;
+                    CPTPlotAreaFrame *frameLayer = self.plotAreaFrame;
+                    if ( frameLayer ) {
+                        CPTLayerAnnotation *newTitleAnnotation = [[CPTLayerAnnotation alloc] initWithAnchorLayer:frameLayer];
+                        CPTTextLayer *newTextLayer             = [[CPTTextLayer alloc] initWithAttributedText:attributedTitle];
+                        newTitleAnnotation.contentLayer       = newTextLayer;
+                        newTitleAnnotation.displacement       = self.titleDisplacement;
+                        newTitleAnnotation.rectAnchor         = self.titlePlotAreaFrameAnchor;
+                        newTitleAnnotation.contentAnchorPoint = [self contentAnchorForRectAnchor:self.titlePlotAreaFrameAnchor];
+                        [self addAnnotation:newTitleAnnotation];
+                        self.titleAnnotation = newTitleAnnotation;
+                    }
                 }
             }
             else {
