@@ -171,7 +171,7 @@ static NSString *const kSecond = @"Second Derivative";
     // Label x axis with a fixed interval policy
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)graph.axisSet;
     CPTXYAxis *x          = axisSet.xAxis;
-    x.majorIntervalLength   = CPTDecimalFromDouble(0.1);
+    x.majorIntervalLength   = @0.1;
     x.minorTicksPerInterval = 4;
     x.majorGridLineStyle    = majorGridLineStyle;
     x.minorGridLineStyle    = minorGridLineStyle;
@@ -245,19 +245,19 @@ static NSString *const kSecond = @"Second Derivative";
     CPTMutablePlotRange *yRange = [plotSpace.yRange mutableCopy];
 
     // Expand the ranges to put some space around the plot
-    [xRange expandRangeByFactor:CPTDecimalFromDouble(1.2)];
-    [yRange expandRangeByFactor:CPTDecimalFromDouble(1.2)];
+    [xRange expandRangeByFactor:@1.2];
+    [yRange expandRangeByFactor:@1.2];
     plotSpace.xRange = xRange;
     plotSpace.yRange = yRange;
 
-    [xRange expandRangeByFactor:CPTDecimalFromDouble(1.025)];
+    [xRange expandRangeByFactor:@1.025];
     xRange.location = plotSpace.xRange.location;
-    [yRange expandRangeByFactor:CPTDecimalFromDouble(1.05)];
+    [yRange expandRangeByFactor:@1.05];
     x.visibleAxisRange = xRange;
     y.visibleAxisRange = yRange;
 
-    [xRange expandRangeByFactor:CPTDecimalFromDouble(3.0)];
-    [yRange expandRangeByFactor:CPTDecimalFromDouble(3.0)];
+    [xRange expandRangeByFactor:@3.0];
+    [yRange expandRangeByFactor:@3.0];
     plotSpace.globalXRange = xRange;
     plotSpace.globalYRange = yRange;
 
@@ -338,13 +338,13 @@ static NSString *const kSecond = @"Second Derivative";
 
     switch ( coordinate ) {
         case CPTCoordinateX:
-            [changedRange expandRangeByFactor:CPTDecimalFromDouble(1.025)];
+            [changedRange expandRangeByFactor:@1.025];
             changedRange.location          = newRange.location;
             axisSet.xAxis.visibleAxisRange = changedRange;
             break;
 
         case CPTCoordinateY:
-            [changedRange expandRangeByFactor:CPTDecimalFromDouble(1.05)];
+            [changedRange expandRangeByFactor:@1.05];
             axisSet.yAxis.visibleAxisRange = changedRange;
             break;
 
@@ -398,11 +398,14 @@ static NSString *const kSecond = @"Second Derivative";
     textLayer.paddingRight  = 2.0;
     textLayer.paddingBottom = 2.0;
 
-    annotation                    = [[CPTPlotSpaceAnnotation alloc] initWithPlotSpace:graph.defaultPlotSpace anchorPlotPoint:anchorPoint];
-    annotation.contentLayer       = textLayer;
-    annotation.contentAnchorPoint = CGPointMake(0.5, 0.0);
-    annotation.displacement       = CGPointMake(0.0, 10.0);
-    [graph.plotAreaFrame.plotArea addAnnotation:annotation];
+    CPTPlotSpace *defaultSpace = graph.defaultPlotSpace;
+    if ( defaultSpace ) {
+        annotation                    = [[CPTPlotSpaceAnnotation alloc] initWithPlotSpace:defaultSpace anchorPlotPoint:anchorPoint];
+        annotation.contentLayer       = textLayer;
+        annotation.contentAnchorPoint = CGPointMake(0.5, 0.0);
+        annotation.displacement       = CGPointMake(0.0, 10.0);
+        [graph.plotAreaFrame.plotArea addAnnotation:annotation];
+    }
 }
 
 -(void)scatterPlotDataLineWasSelected:(CPTScatterPlot *)plot

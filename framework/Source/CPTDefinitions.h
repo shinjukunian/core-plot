@@ -55,6 +55,39 @@
 
 #define cpt_deprecated __attribute__( (deprecated) )
 
+// Nullability
+
+/**
+ *  @def cpt_nullable
+ *  @hideinitializer
+ *  @brief Marks a pointer declaration as nullable.
+ **/
+
+/**
+ *  @def cpt_nonnull
+ *  @hideinitializer
+ *  @brief Marks a pointer declaration as non-null.
+ **/
+
+#if __clang__ && ( ( (__clang_major__ == 6) && (__clang_minor__ >= 1 ) ) || (__clang_major__ > 6 ) )
+// nullable symbols are already defined
+#else
+#define nullable
+#define nonnull
+#define __nullable
+#define __nonnull
+#endif
+
+// Deprecated methods
+
+/**
+ *  @def cpt_deprecated
+ *  @hideinitializer
+ *  @brief Marks a method declaration as deprecated.
+ **/
+
+#define cpt_deprecated __attribute__( (deprecated) )
+
 // Type safety defines
 
 /**
@@ -126,11 +159,12 @@ typedef NS_ENUM (NSInteger, CPTErrorBarType) {
  *  @brief Enumeration of axis scale types
  **/
 typedef NS_ENUM (NSInteger, CPTScaleType) {
-    CPTScaleTypeLinear,   ///< Linear axis scale
-    CPTScaleTypeLog,      ///< Logarithmic axis scale
-    CPTScaleTypeAngular,  ///< Angular axis scale (not implemented)
-    CPTScaleTypeDateTime, ///< Date/time axis scale (not implemented)
-    CPTScaleTypeCategory  ///< Category axis scale
+    CPTScaleTypeLinear,    ///< Linear axis scale
+    CPTScaleTypeLog,       ///< Logarithmic axis scale
+    CPTScaleTypeAngular,   ///< Angular axis scale (not implemented)
+    CPTScaleTypeDateTime,  ///< Date/time axis scale (not implemented)
+    CPTScaleTypeCategory,  ///< Category axis scale
+    CPTScaleTypeLogModulus ///< Log-modulus axis scale
 };
 
 /**
@@ -202,3 +236,5 @@ typedef struct _CPTEdgeInsets {
 CPTEdgeInsets;
 
 extern const CPTEdgeInsets CPTEdgeInsetsZero; ///< Defines a set of stretchable image edge insets where all of the values are zero (@num{0}).
+
+typedef void (^CPTQuickLookImageBlock)(__nonnull CGContextRef context, CGFloat scale, CGRect bounds); ///< Render a Quick Look image into the given context.

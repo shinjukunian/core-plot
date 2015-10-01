@@ -2,6 +2,7 @@
 
 #import "CPTGraph.h"
 #import "CPTPathExtensions.h"
+#import "CPTPlatformSpecificCategories.h"
 #import "CPTPlatformSpecificFunctions.h"
 #import "CPTShadow.h"
 #import "CPTUtilities.h"
@@ -29,8 +30,8 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
 @property (nonatomic, readwrite, getter = isRenderingRecursively) BOOL renderingRecursively;
 @property (nonatomic, readwrite, assign) BOOL useFastRendering;
 
--(void)applyTransform:(CATransform3D)transform toContext:(CGContextRef)context;
--(NSString *)subLayersAtIndex:(NSUInteger)idx;
+-(void)applyTransform:(CATransform3D)transform toContext:(nonnull CGContextRef)context;
+-(nonnull NSString *)subLayersAtIndex:(NSUInteger)idx;
 
 @end
 
@@ -1063,6 +1064,18 @@ NSString *const CPTLayerBoundsDidChangeNotification = @"CPTLayerBoundsDidChangeN
     }
 
     return result;
+}
+
+/// @endcond
+
+#pragma mark -
+#pragma mark Debugging
+
+/// @cond
+
+-(id)debugQuickLookObject
+{
+    return [self imageOfLayer];
 }
 
 /// @endcond

@@ -1,3 +1,25 @@
+# Release 2.0 (TBD)
+
+## Release Notes
+
+To be determined
+
+## Details
+- **New**: Combined the Mac and iOS projects and added an iOS framework target.
+- **New**: Added histogram style options to `CPTScatterPlot`.
+- **New**: Added iOS unit tests.
+- **New**: Added plot space point conversion methods that take an `NSArray` of coordinate values.
+- **New**: Added nullability annotations to all property and method declarations.
+- **New**: Added the log-modulus scale type.
+- **Changed**: Increased the deployment target to iOS 8.0 and Mac OS X 10.7.
+- **Changed**: Changed the Installation Directory for the Mac framework to "@rpath" and updated the Runpath Search Path in each Mac example app.
+- **Changed**: Changed all public properties and methods that take `NSDecimal` values to take `NSNumber` values instead. Use `NSDecimalNumber` to maintain full decimal precision.
+- **Changed**: Added properties to `CPTPlotRange` and `CPTMutablePlotRange` to read and write all range properties as `NSNumber`, `NSDecimal`, or `double`.
+- **Changed**: Renamed the `CPTXYAxis.orthogonalCoordinateDecimal` property to `CPTXYAxis.orthogonalPosition`.
+- **Changed**: Miscellaneous bug fixes and cleanup.
+
+
+
 # Release 1.6 (May 9, 2015)
 
 ## Release Notes

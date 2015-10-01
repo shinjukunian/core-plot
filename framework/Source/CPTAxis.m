@@ -35,22 +35,22 @@
 @interface CPTAxis()
 
 @property (nonatomic, readwrite, assign) BOOL needsRelabel;
-@property (nonatomic, readwrite, cpt_weak_property) cpt_weak CPTGridLines *minorGridLines;
-@property (nonatomic, readwrite, cpt_weak_property) cpt_weak CPTGridLines *majorGridLines;
-@property (nonatomic, readwrite, cpt_weak_property) cpt_weak CPTAxisLabel *pointingDeviceDownLabel;
-@property (nonatomic, readwrite, cpt_weak_property) cpt_weak CPTAxisLabel *pointingDeviceDownTickLabel;
+@property (nonatomic, readwrite, cpt_weak_property, nullable) cpt_weak CPTGridLines *minorGridLines;
+@property (nonatomic, readwrite, cpt_weak_property, nullable) cpt_weak CPTGridLines *majorGridLines;
+@property (nonatomic, readwrite, cpt_weak_property, nullable) cpt_weak CPTAxisLabel *pointingDeviceDownLabel;
+@property (nonatomic, readwrite, cpt_weak_property, nullable) cpt_weak CPTAxisLabel *pointingDeviceDownTickLabel;
 @property (nonatomic, readwrite, assign) BOOL labelFormatterChanged;
 @property (nonatomic, readwrite, assign) BOOL minorLabelFormatterChanged;
-@property (nonatomic, readwrite, strong) NSMutableArray *mutableBackgroundLimitBands;
+@property (nonatomic, readwrite, strong, nullable) NSMutableArray *mutableBackgroundLimitBands;
 @property (nonatomic, readonly) CGFloat tickOffset;
 @property (nonatomic, readwrite, assign) BOOL inTitleUpdate;
 @property (nonatomic, readwrite, assign) BOOL labelsUpdated;
 
--(void)generateFixedIntervalMajorTickLocations:(NSSet *__autoreleasing *)newMajorLocations minorTickLocations:(NSSet *__autoreleasing *)newMinorLocations;
--(void)autoGenerateMajorTickLocations:(NSSet *__autoreleasing *)newMajorLocations minorTickLocations:(NSSet *__autoreleasing *)newMinorLocations;
--(void)generateEqualMajorTickLocations:(NSSet *__autoreleasing *)newMajorLocations minorTickLocations:(NSSet *__autoreleasing *)newMinorLocations;
--(NSSet *)filteredTickLocations:(NSSet *)allLocations;
--(void)updateAxisLabelsAtLocations:(NSSet *)locations inRange:(CPTPlotRange *)labeledRange useMajorAxisLabels:(BOOL)useMajorAxisLabels;
+-(void)generateFixedIntervalMajorTickLocations:(NSSet *__nonnull __autoreleasing *)newMajorLocations minorTickLocations:(NSSet *__nonnull __autoreleasing *)newMinorLocations;
+-(void)autoGenerateMajorTickLocations:(NSSet *__nonnull __autoreleasing *)newMajorLocations minorTickLocations:(NSSet *__nonnull __autoreleasing *)newMinorLocations;
+-(void)generateEqualMajorTickLocations:(NSSet *__nonnull __autoreleasing *)newMajorLocations minorTickLocations:(NSSet *__nonnull __autoreleasing *)newMinorLocations;
+-(nullable NSSet *)filteredTickLocations:(nullable NSSet *)allLocations;
+-(void)updateAxisLabelsAtLocations:(nullable NSSet *)locations inRange:(nullable CPTPlotRange *)labeledRange useMajorAxisLabels:(BOOL)useMajorAxisLabels;
 -(void)updateCustomTickLabels;
 -(void)updateMajorTickLabelOffsets;
 -(void)updateMinorTickLabelOffsets;
@@ -87,9 +87,9 @@ NSDecimal CPTNiceLength(NSDecimal length);
  **/
 @synthesize coordinate;
 
-/** @property NSDecimal labelingOrigin
+/** @property NSNumber *labelingOrigin
  *  @brief The origin used for axis labels.
- *  The default value is 0. It is only used when the axis labeling
+ *  The default value is @num{0}. It is only used when the axis labeling
  *  policy is #CPTAxisLabelingPolicyFixedInterval. The origin is
  *  a reference point used to being labeling. Labels are added
  *  at the origin, as well as at fixed intervals above and below
@@ -186,13 +186,13 @@ NSDecimal CPTNiceLength(NSDecimal length);
  **/
 @synthesize titleDirection;
 
-/** @property NSDecimal titleLocation
+/** @property NSNumber *titleLocation
  *  @brief The position along the axis where the axis title should be centered.
  *  If @NAN (the default), the @ref defaultTitleLocation will be used.
  **/
 @synthesize titleLocation;
 
-/** @property NSDecimal defaultTitleLocation
+/** @property NSNumber *defaultTitleLocation
  *  @brief The position along the axis where the axis title should be centered
  *  if @ref titleLocation is @NAN.
  **/
@@ -328,7 +328,7 @@ NSDecimal CPTNiceLength(NSDecimal length);
 
 // Major ticks
 
-/** @property NSDecimal majorIntervalLength
+/** @property NSNumber *majorIntervalLength
  *  @brief The distance between major tick marks expressed in data coordinates.
  **/
 @synthesize majorIntervalLength;
@@ -558,8 +558,8 @@ NSDecimal CPTNiceLength(NSDecimal length);
         minorGridLineStyle          = nil;
         axisLineCapMin              = nil;
         axisLineCapMax              = nil;
-        labelingOrigin              = [[NSDecimalNumber zero] decimalValue];
-        majorIntervalLength         = [[NSDecimalNumber one] decimalValue];
+        labelingOrigin              = @0.0;
+        majorIntervalLength         = @1.0;
         minorTicksPerInterval       = 1;
         coordinate                  = CPTCoordinateX;
         labelingPolicy              = CPTAxisLabelingPolicyFixedInterval;
@@ -581,7 +581,7 @@ NSDecimal CPTNiceLength(NSDecimal length);
         axisTitle                   = nil;
         titleTextStyle              = [[CPTTextStyle alloc] init];
         titleRotation               = NAN;
-        titleLocation               = CPTDecimalNaN();
+        titleLocation               = @(NAN);
         needsRelabel                = YES;
         labelExclusionRanges        = nil;
         plotArea                    = nil;
@@ -719,8 +719,8 @@ NSDecimal CPTNiceLength(NSDecimal length);
     [coder encodeObject:self.minorGridLineStyle forKey:@"CPTAxis.minorGridLineStyle"];
     [coder encodeObject:self.axisLineCapMin forKey:@"CPTAxis.axisLineCapMin"];
     [coder encodeObject:self.axisLineCapMax forKey:@"CPTAxis.axisLineCapMax"];
-    [coder encodeDecimal:self.labelingOrigin forKey:@"CPTAxis.labelingOrigin"];
-    [coder encodeDecimal:self.majorIntervalLength forKey:@"CPTAxis.majorIntervalLength"];
+    [coder encodeObject:self.labelingOrigin forKey:@"CPTAxis.labelingOrigin"];
+    [coder encodeObject:self.majorIntervalLength forKey:@"CPTAxis.majorIntervalLength"];
     [coder encodeInteger:(NSInteger)self.minorTicksPerInterval forKey:@"CPTAxis.minorTicksPerInterval"];
     [coder encodeInteger:(NSInteger)self.preferredNumberOfMajorTicks forKey:@"CPTAxis.preferredNumberOfMajorTicks"];
     [coder encodeInteger:self.labelingPolicy forKey:@"CPTAxis.labelingPolicy"];
@@ -739,7 +739,7 @@ NSDecimal CPTNiceLength(NSDecimal length);
     [coder encodeCGFloat:self.titleOffset forKey:@"CPTAxis.titleOffset"];
     [coder encodeCGFloat:self.titleRotation forKey:@"CPTAxis.titleRotation"];
     [coder encodeInteger:self.titleDirection forKey:@"CPTAxis.titleDirection"];
-    [coder encodeDecimal:self.titleLocation forKey:@"CPTAxis.titleLocation"];
+    [coder encodeObject:self.titleLocation forKey:@"CPTAxis.titleLocation"];
     [coder encodeInteger:self.tickDirection forKey:@"CPTAxis.tickDirection"];
     [coder encodeBool:self.needsRelabel forKey:@"CPTAxis.needsRelabel"];
     [coder encodeObject:self.labelExclusionRanges forKey:@"CPTAxis.labelExclusionRanges"];
@@ -786,8 +786,8 @@ NSDecimal CPTNiceLength(NSDecimal length);
         minorGridLineStyle          = [[coder decodeObjectForKey:@"CPTAxis.minorGridLineStyle"] copy];
         axisLineCapMin              = [[coder decodeObjectForKey:@"CPTAxis.axisLineCapMin"] copy];
         axisLineCapMax              = [[coder decodeObjectForKey:@"CPTAxis.axisLineCapMax"] copy];
-        labelingOrigin              = [coder decodeDecimalForKey:@"CPTAxis.labelingOrigin"];
-        majorIntervalLength         = [coder decodeDecimalForKey:@"CPTAxis.majorIntervalLength"];
+        labelingOrigin              = [coder decodeObjectForKey:@"CPTAxis.labelingOrigin"];
+        majorIntervalLength         = [coder decodeObjectForKey:@"CPTAxis.majorIntervalLength"];
         minorTicksPerInterval       = (NSUInteger)[coder decodeIntegerForKey : @"CPTAxis.minorTicksPerInterval"];
         preferredNumberOfMajorTicks = (NSUInteger)[coder decodeIntegerForKey : @"CPTAxis.preferredNumberOfMajorTicks"];
         labelingPolicy              = (CPTAxisLabelingPolicy)[coder decodeIntegerForKey : @"CPTAxis.labelingPolicy"];
@@ -806,7 +806,7 @@ NSDecimal CPTNiceLength(NSDecimal length);
         titleOffset                 = [coder decodeCGFloatForKey:@"CPTAxis.titleOffset"];
         titleRotation               = [coder decodeCGFloatForKey:@"CPTAxis.titleRotation"];
         titleDirection              = (CPTSign)[coder decodeIntegerForKey : @"CPTAxis.titleDirection"];
-        titleLocation               = [coder decodeDecimalForKey:@"CPTAxis.titleLocation"];
+        titleLocation               = [coder decodeObjectForKey:@"CPTAxis.titleLocation"];
         tickDirection               = (CPTSign)[coder decodeIntegerForKey : @"CPTAxis.tickDirection"];
         needsRelabel                = [coder decodeBoolForKey:@"CPTAxis.needsRelabel"];
         labelExclusionRanges        = [coder decodeObjectForKey:@"CPTAxis.labelExclusionRanges"];
@@ -879,7 +879,7 @@ NSDecimal CPTNiceLength(NSDecimal length);
     NSMutableSet *minorLocations = [NSMutableSet set];
 
     NSDecimal zero          = CPTDecimalFromInteger(0);
-    NSDecimal majorInterval = self.majorIntervalLength;
+    NSDecimal majorInterval = self.majorIntervalLength.decimalValue;
 
     if ( CPTDecimalGreaterThan(majorInterval, zero) ) {
         CPTMutablePlotRange *range = [[self.plotSpace plotRangeForCoordinate:self.coordinate] mutableCopy];
@@ -889,8 +889,8 @@ NSDecimal CPTNiceLength(NSDecimal length);
                 [range intersectionPlotRange:theVisibleRange];
             }
 
-            NSDecimal rangeMin = range.minLimit;
-            NSDecimal rangeMax = range.maxLimit;
+            NSDecimal rangeMin = range.minLimitDecimal;
+            NSDecimal rangeMax = range.maxLimitDecimal;
 
             NSDecimal minorInterval;
             NSUInteger minorTickCount = self.minorTicksPerInterval;
@@ -902,9 +902,10 @@ NSDecimal CPTNiceLength(NSDecimal length);
             }
 
             // Set starting coord--should be the smallest value >= rangeMin that is a whole multiple of majorInterval away from the labelingOrigin
-            NSDecimal coord = CPTDecimalDivide(CPTDecimalSubtract(rangeMin, self.labelingOrigin), majorInterval);
+            NSDecimal origin = self.labelingOrigin.decimalValue;
+            NSDecimal coord  = CPTDecimalDivide(CPTDecimalSubtract(rangeMin, origin), majorInterval);
             NSDecimalRound(&coord, &coord, 0, NSRoundUp);
-            coord = CPTDecimalAdd(CPTDecimalMultiply(coord, majorInterval), self.labelingOrigin);
+            coord = CPTDecimalAdd(CPTDecimalMultiply(coord, majorInterval), origin);
 
             // Set minor ticks between the starting point and rangeMin
             if ( minorTickCount > 0 ) {
@@ -982,6 +983,10 @@ NSDecimal CPTNiceLength(NSDecimal length);
             }
             break;
 
+        case CPTScaleTypeLogModulus:
+            // supported scale type
+            break;
+
         default:
             // unsupported scale type--bail out
             valid = NO;
@@ -1024,10 +1029,10 @@ NSDecimal CPTNiceLength(NSDecimal length);
 
                 NSDecimal majorInterval;
                 if ( numTicks == 2 ) {
-                    majorInterval = CPTNiceLength(range.length);
+                    majorInterval = CPTNiceLength(range.lengthDecimal);
                 }
                 else {
-                    majorInterval = CPTDecimalDivide( range.length, CPTDecimalFromUnsignedInteger(numTicks - 1) );
+                    majorInterval = CPTDecimalDivide( range.lengthDecimal, CPTDecimalFromUnsignedInteger(numTicks - 1) );
                     majorInterval = CPTNiceNum(majorInterval);
                 }
                 if ( CPTDecimalLessThan(majorInterval, zero) ) {
@@ -1043,8 +1048,8 @@ NSDecimal CPTNiceLength(NSDecimal length);
                 }
 
                 // Calculate actual range limits
-                NSDecimal minLimit = range.minLimit;
-                NSDecimal maxLimit = range.maxLimit;
+                NSDecimal minLimit = range.minLimitDecimal;
+                NSDecimal maxLimit = range.maxLimitDecimal;
 
                 // Determine the initial and final major indexes for the actual visible range
                 NSDecimal initialIndex = CPTDecimalDivide(minLimit, majorInterval);
@@ -1088,20 +1093,9 @@ NSDecimal CPTNiceLength(NSDecimal length);
 
                 if ( (minLimit > 0.0) && (maxLimit > 0.0) ) {
                     // Determine interval value
-                    if ( numTicks == 0 ) {
-                        numTicks = 5;
-                    }
-
-                    double interval;
-
                     length = log10(maxLimit / minLimit);
 
-                    if ( fabs(length) >= numTicks ) {
-                        interval = CPTDecimalDoubleValue( CPTNiceNum( CPTDecimalFromDouble( length / (numTicks - 1) ) ) );
-                    }
-                    else {
-                        interval = signbit(length) ? -1.0 : 1.0;
-                    }
+                    double interval     = signbit(length) ? -1.0 : 1.0;
                     double intervalStep = pow( 10.0, fabs(interval) );
 
                     // Determine minor interval
@@ -1126,6 +1120,106 @@ NSDecimal CPTNiceLength(NSDecimal length);
                         }
                         minorInterval *= intervalStep;
 
+                        if ( pointLocation < minLimit ) {
+                            continue;
+                        }
+                        if ( pointLocation > maxLimit ) {
+                            continue;
+                        }
+                        [majorLocations addObject:@(pointLocation)];
+                    }
+                }
+            }
+            break;
+
+            case CPTScaleTypeLogModulus:
+            {
+                double minLimit = range.minLimitDouble;
+                double maxLimit = range.maxLimitDouble;
+
+                // Determine interval value
+                double modMinLimit = CPTLogModulus(minLimit);
+                double modMaxLimit = CPTLogModulus(maxLimit);
+
+                double multiplier = pow( 10.0, floor( log10(length) ) );
+                multiplier = (multiplier < 1.0) ? multiplier : 1.0;
+
+                double intervalStep = 10.0;
+
+                // Determine the initial and final major indexes for the actual visible range
+                NSInteger initialIndex = (NSInteger)lrint( floor(modMinLimit / multiplier) ); // can be negative
+                NSInteger finalIndex   = (NSInteger)lrint( ceil(modMaxLimit / multiplier) );  // can be negative
+
+                if ( initialIndex < 0 ) {
+                    // Determine minor interval
+                    double minorInterval = intervalStep * 0.9 * multiplier / minorTicks;
+
+                    for ( NSInteger i = MIN(0, finalIndex); i >= initialIndex; i-- ) {
+                        double pointLocation;
+                        double sign = -multiplier;
+
+                        if ( multiplier < 1.0 ) {
+                            pointLocation = sign * pow(10.0, fabs( (double)i ) - 1.0);
+                        }
+                        else {
+                            pointLocation = sign * pow( 10.0, fabs( (double)i ) );
+                        }
+
+                        for ( NSUInteger j = 1; j < minorTicks; j++ ) {
+                            double minorPointLocation = pointLocation + sign * minorInterval * j;
+                            if ( minorPointLocation < minLimit ) {
+                                continue;
+                            }
+                            if ( minorPointLocation > maxLimit ) {
+                                continue;
+                            }
+                            [minorLocations addObject:@(minorPointLocation)];
+                        }
+                        minorInterval *= intervalStep;
+
+                        if ( i == 0 ) {
+                            pointLocation = 0.0;
+                        }
+                        if ( pointLocation < minLimit ) {
+                            continue;
+                        }
+                        if ( pointLocation > maxLimit ) {
+                            continue;
+                        }
+                        [majorLocations addObject:@(pointLocation)];
+                    }
+                }
+
+                if ( finalIndex >= 0 ) {
+                    // Determine minor interval
+                    double minorInterval = intervalStep * 0.9 * multiplier / minorTicks;
+
+                    for ( NSInteger i = MAX(0, initialIndex); i <= finalIndex; i++ ) {
+                        double pointLocation;
+                        double sign = multiplier;
+
+                        if ( multiplier < 1.0 ) {
+                            pointLocation = sign * pow(10.0, fabs( (double)i ) - 1.0);
+                        }
+                        else {
+                            pointLocation = sign * pow( 10.0, fabs( (double)i ) );
+                        }
+
+                        for ( NSUInteger j = 1; j < minorTicks; j++ ) {
+                            double minorPointLocation = pointLocation + sign * minorInterval * j;
+                            if ( minorPointLocation < minLimit ) {
+                                continue;
+                            }
+                            if ( minorPointLocation > maxLimit ) {
+                                continue;
+                            }
+                            [minorLocations addObject:@(minorPointLocation)];
+                        }
+                        minorInterval *= intervalStep;
+
+                        if ( i == 0 ) {
+                            pointLocation = 0.0;
+                        }
                         if ( pointLocation < minLimit ) {
                             continue;
                         }
@@ -1169,15 +1263,15 @@ NSDecimal CPTNiceLength(NSDecimal length);
 
         if ( range.lengthDouble != 0.0 ) {
             NSDecimal zero     = CPTDecimalFromInteger(0);
-            NSDecimal rangeMin = range.minLimit;
-            NSDecimal rangeMax = range.maxLimit;
+            NSDecimal rangeMin = range.minLimitDecimal;
+            NSDecimal rangeMax = range.maxLimitDecimal;
 
             NSUInteger majorTickCount = self.preferredNumberOfMajorTicks;
 
             if ( majorTickCount < 2 ) {
                 majorTickCount = 2;
             }
-            NSDecimal majorInterval = CPTDecimalDivide( range.length, CPTDecimalFromUnsignedInteger(majorTickCount - 1) );
+            NSDecimal majorInterval = CPTDecimalDivide( range.lengthDecimal, CPTDecimalFromUnsignedInteger(majorTickCount - 1) );
             if ( CPTDecimalLessThan(majorInterval, zero) ) {
                 majorInterval = CPTDecimalMultiply( majorInterval, CPTDecimalFromInteger(-1) );
             }
@@ -1475,9 +1569,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
     CPTLayer *lastLayer               = nil;
 
     for ( NSDecimalNumber *tickLocation in locations ) {
-        NSDecimal locationDecimal = tickLocation.decimalValue;
-
-        if ( labeledRange && ![labeledRange contains:locationDecimal] ) {
+        if ( labeledRange && ![labeledRange containsNumber:tickLocation] ) {
             continue;
         }
 
@@ -1485,7 +1577,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
         BOOL needsNewContentLayer = NO;
 
         // reuse axis labels where possible--will prevent flicker when updating layers
-        blankLabel.tickLocation = locationDecimal;
+        blankLabel.tickLocation = tickLocation;
         CPTAxisLabel *oldAxisLabel = [oldAxisLabels member:blankLabel];
 
         if ( oldAxisLabel ) {
@@ -1493,7 +1585,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
         }
         else {
             newAxisLabel              = [[CPTAxisLabel alloc] initWithText:nil textStyle:nil];
-            newAxisLabel.tickLocation = locationDecimal;
+            newAxisLabel.tickLocation = tickLocation;
             needsNewContentLayer      = YES;
         }
 
@@ -1684,19 +1776,19 @@ NSDecimal CPTNiceLength(NSDecimal length)
             
             
             for ( CPTAxisLabel *label in self.axisLabels ) {
-                BOOL visible = [range contains:label.tickLocation];
+                BOOL visible = [range containsNumber:label.tickLocation];
                 label.contentLayer.hidden = !visible;
                 if ( visible ) {
-                    CGPoint tickBasePoint = [self viewPointForCoordinateDecimalNumber:label.tickLocation];
+                    CGPoint tickBasePoint = [self viewPointForCoordinateValue:label.tickLocation];
                     [label positionRelativeToViewPoint:tickBasePoint forCoordinate:orthogonalCoordinate inDirection:direction];
                 }
             }
 
             for ( CPTAxisLabel *label in self.minorTickAxisLabels ) {
-                BOOL visible = [range contains:label.tickLocation];
+                BOOL visible = [range containsNumber:label.tickLocation];
                 label.contentLayer.hidden = !visible;
                 if ( visible ) {
-                    CGPoint tickBasePoint = [self viewPointForCoordinateDecimalNumber:label.tickLocation];
+                    CGPoint tickBasePoint = [self viewPointForCoordinateValue:label.tickLocation];
                     [label positionRelativeToViewPoint:tickBasePoint forCoordinate:orthogonalCoordinate inDirection:direction];
                 }
             }
@@ -1760,7 +1852,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
     }
 
     for ( CPTAxisLabel *label in self.axisLabels ) {
-        CGPoint tickBasePoint = [self viewPointForCoordinateDecimalNumber:label.tickLocation];
+        CGPoint tickBasePoint = [self viewPointForCoordinateValue:label.tickLocation];
         [label positionRelativeToViewPoint:tickBasePoint forCoordinate:orthogonalCoordinate inDirection:direction];
     }
 }
@@ -1779,7 +1871,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
     }
 
     for ( CPTAxisLabel *label in self.minorTickAxisLabels ) {
-        CGPoint tickBasePoint = [self viewPointForCoordinateDecimalNumber:label.tickLocation];
+        CGPoint tickBasePoint = [self viewPointForCoordinateValue:label.tickLocation];
         [label positionRelativeToViewPoint:tickBasePoint forCoordinate:orthogonalCoordinate inDirection:direction];
     }
 }
@@ -1787,9 +1879,9 @@ NSDecimal CPTNiceLength(NSDecimal length)
 #pragma mark -
 #pragma mark Titles
 
--(NSDecimal)defaultTitleLocation
+-(NSNumber *)defaultTitleLocation
 {
-    return CPTDecimalNaN();
+    return @(NAN);
 }
 
 /**
@@ -1803,7 +1895,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
         direction = self.tickDirection;
     }
 
-    [self.axisTitle positionRelativeToViewPoint:[self viewPointForCoordinateDecimalNumber:self.titleLocation]
+    [self.axisTitle positionRelativeToViewPoint:[self viewPointForCoordinateValue:self.titleLocation]
                                   forCoordinate:CPTOrthogonalCoordinate(self.coordinate)
                                     inDirection:direction];
 }
@@ -1878,7 +1970,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
 }
 
 #pragma mark -
-#pragma mark Responder Chain and User interaction
+#pragma mark Responder Chain and User Interaction
 
 /// @name User Interaction
 /// @{
@@ -2382,17 +2474,23 @@ NSDecimal CPTNiceLength(NSDecimal length)
     }
 }
 
--(void)setTitleLocation:(NSDecimal)newLocation
+-(void)setTitleLocation:(NSNumber *)newLocation
 {
-    if ( NSDecimalCompare(&newLocation, &titleLocation) != NSOrderedSame ) {
+    BOOL needsUpdate = YES;
+
+    if ( newLocation ) {
+        needsUpdate = ![titleLocation isEqualToNumber:newLocation];
+    }
+
+    if ( needsUpdate ) {
         titleLocation = newLocation;
         [self updateAxisTitle];
     }
 }
 
--(NSDecimal)titleLocation
+-(NSNumber *)titleLocation
 {
-    if ( NSDecimalIsNotANumber(&titleLocation) ) {
+    if ( isnan(titleLocation.doubleValue) ) {
         return self.defaultTitleLocation;
     }
     else {
@@ -2682,18 +2780,30 @@ NSDecimal CPTNiceLength(NSDecimal length)
     }
 }
 
--(void)setLabelingOrigin:(NSDecimal)newLabelingOrigin
+-(void)setLabelingOrigin:(NSNumber *)newLabelingOrigin
 {
-    if ( !CPTDecimalEquals(labelingOrigin, newLabelingOrigin) ) {
+    BOOL needsUpdate = YES;
+
+    if ( newLabelingOrigin ) {
+        needsUpdate = ![labelingOrigin isEqualToNumber:newLabelingOrigin];
+    }
+
+    if ( needsUpdate ) {
         labelingOrigin = newLabelingOrigin;
 
         self.needsRelabel = YES;
     }
 }
 
--(void)setMajorIntervalLength:(NSDecimal)newIntervalLength
+-(void)setMajorIntervalLength:(NSNumber *)newIntervalLength
 {
-    if ( !CPTDecimalEquals(majorIntervalLength, newIntervalLength) ) {
+    BOOL needsUpdate = YES;
+
+    if ( newIntervalLength ) {
+        needsUpdate = ![majorIntervalLength isEqualToNumber:newIntervalLength];
+    }
+
+    if ( needsUpdate ) {
         majorIntervalLength = newIntervalLength;
 
         self.needsRelabel = YES;
@@ -3052,10 +3162,10 @@ NSDecimal CPTNiceLength(NSDecimal length)
 @implementation CPTAxis(AbstractMethods)
 
 /** @brief Converts a position on the axis to drawing coordinates.
- *  @param coordinateDecimalNumber The axis value in data coordinate space.
+ *  @param coordinateValue The axis value in data coordinate space.
  *  @return The drawing coordinates of the point.
  **/
--(CGPoint)viewPointForCoordinateDecimalNumber:(NSDecimal)coordinateDecimalNumber
+-(CGPoint)viewPointForCoordinateValue:(NSNumber *)coordinateValue
 {
     return CGPointZero;
 }

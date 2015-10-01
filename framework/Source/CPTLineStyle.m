@@ -5,6 +5,8 @@
 #import "CPTFill.h"
 #import "CPTGradient.h"
 #import "CPTMutableLineStyle.h"
+#import "CPTPlatformSpecificFunctions.h"
+#import "CPTUtilities.h"
 #import "NSCoderExtensions.h"
 #import "NSNumberExtensions.h"
 
@@ -15,11 +17,11 @@
 @property (nonatomic, readwrite, assign) CGLineJoin lineJoin;
 @property (nonatomic, readwrite, assign) CGFloat miterLimit;
 @property (nonatomic, readwrite, assign) CGFloat lineWidth;
-@property (nonatomic, readwrite, strong) NSArray *dashPattern;
+@property (nonatomic, readwrite, strong, nullable) NSArray *dashPattern;
 @property (nonatomic, readwrite, assign) CGFloat patternPhase;
-@property (nonatomic, readwrite, strong) CPTColor *lineColor;
-@property (nonatomic, readwrite, strong) CPTFill *lineFill;
-@property (nonatomic, readwrite, strong) CPTGradient *lineGradient;
+@property (nonatomic, readwrite, strong, nullable) CPTColor *lineColor;
+@property (nonatomic, readwrite, strong, nullable) CPTFill *lineFill;
+@property (nonatomic, readwrite, strong, nullable) CPTGradient *lineGradient;
 
 -(void)strokePathWithGradient:(CPTGradient *)gradient inContext:(CGContextRef)context;
 
@@ -384,6 +386,25 @@
     styleCopy.lineGradient = self.lineGradient;
 
     return styleCopy;
+}
+
+/// @endcond
+
+#pragma mark -
+#pragma mark Debugging
+
+/// @cond
+
+-(id)debugQuickLookObject
+{
+    const CGRect rect = CGRectMake(0.0, 0.0, 100.0, 100.0);
+
+    return CPTQuickLookImage(rect, ^(CGContextRef context, CGFloat scale, CGRect bounds) {
+        const CGRect alignedRect = CPTAlignBorderedRectToUserSpace(context, bounds, self);
+
+        [self setLineStyleInContext:context];
+        [self strokeRect:alignedRect inContext:context];
+    });
 }
 
 /// @endcond

@@ -4,16 +4,16 @@
 
 @interface CPTTextStyle : NSObject<NSCoding, NSCopying, NSMutableCopying>
 
-@property (readonly, copy, nonatomic) NSString *fontName;
+@property (readonly, copy, nonatomic, nullable) NSString *fontName;
 @property (readonly, nonatomic) CGFloat fontSize;
-@property (readonly, copy, nonatomic) CPTColor *color;
+@property (readonly, copy, nonatomic, nullable) CPTColor *color;
 @property (readonly, nonatomic) CPTTextAlignment textAlignment;
 @property (readonly, assign, nonatomic) NSLineBreakMode lineBreakMode;
 
 /// @name Factory Methods
 /// @{
-+(instancetype)textStyle;
-+(instancetype)textStyleWithStyle:(CPTTextStyle *)textStyle;
++(nonnull instancetype)textStyle;
++(nonnull instancetype)textStyleWithStyle:(nullable CPTTextStyle *)textStyle;
 /// @}
 
 @end
@@ -25,11 +25,11 @@
  **/
 @interface CPTTextStyle(CPTPlatformSpecificTextStyleExtensions)
 
-@property (readonly, nonatomic) NSDictionary *attributes;
+@property (readonly, nonatomic, nonnull) NSDictionary *attributes;
 
 /// @name Factory Methods
 /// @{
-+(instancetype)textStyleWithAttributes:(NSDictionary *)attributes;
++(nonnull instancetype)textStyleWithAttributes:(nullable NSDictionary *)attributes;
 /// @}
 
 @end
@@ -43,12 +43,12 @@
 
 /// @name Measurement
 /// @{
--(CGSize)sizeWithTextStyle:(CPTTextStyle *)style;
+-(CGSize)sizeWithTextStyle:(nullable CPTTextStyle *)style;
 /// @}
 
 /// @name Drawing
 /// @{
--(void)drawInRect:(CGRect)rect withTextStyle:(CPTTextStyle *)style inContext:(CGContextRef)context;
+-(void)drawInRect:(CGRect)rect withTextStyle:(nullable CPTTextStyle *)style inContext:(nonnull CGContextRef)context;
 /// @}
 
 @end

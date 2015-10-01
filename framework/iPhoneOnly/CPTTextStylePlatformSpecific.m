@@ -6,10 +6,6 @@
 #import "CPTPlatformSpecificFunctions.h"
 #import "tgmath.h"
 
-// disable warnings when compiling with deployment target of iOS 6+
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-pointer-compare"
-
 @implementation CPTTextStyle(CPTPlatformSpecificTextStyleExtensions)
 
 /** @property NSDictionary *attributes
@@ -43,36 +39,24 @@
     CPTMutableTextStyle *newStyle = [CPTMutableTextStyle textStyle];
 
     // Font
-    BOOL hasFontAttributeName = (&NSFontAttributeName != NULL);
+    UIFont *styleFont = attributes[NSFontAttributeName];
 
-    if ( hasFontAttributeName ) {
-        UIFont *styleFont = attributes[NSFontAttributeName];
-
-        if ( styleFont ) {
-            newStyle.fontName = styleFont.fontName;
-            newStyle.fontSize = styleFont.pointSize;
-        }
+    if ( styleFont ) {
+        newStyle.fontName = styleFont.fontName;
+        newStyle.fontSize = styleFont.pointSize;
     }
 
     // Color
-    BOOL hasColorAttributeName = (&NSForegroundColorAttributeName != NULL);
-
-    if ( hasColorAttributeName ) {
-        UIColor *styleColor = attributes[NSForegroundColorAttributeName];
-        if ( styleColor ) {
-            newStyle.color = [CPTColor colorWithCGColor:styleColor.CGColor];
-        }
+    UIColor *styleColor = attributes[NSForegroundColorAttributeName];
+    if ( styleColor ) {
+        newStyle.color = [CPTColor colorWithCGColor:styleColor.CGColor];
     }
 
     // Text alignment and line break mode
-    BOOL hasParagraphAttributeName = (&NSParagraphStyleAttributeName != NULL);
-
-    if ( hasParagraphAttributeName ) {
-        NSParagraphStyle *paragraphStyle = attributes[NSParagraphStyleAttributeName];
-        if ( paragraphStyle ) {
-            newStyle.textAlignment = (CPTTextAlignment)paragraphStyle.alignment;
-            newStyle.lineBreakMode = paragraphStyle.lineBreakMode;
-        }
+    NSParagraphStyle *paragraphStyle = attributes[NSParagraphStyleAttributeName];
+    if ( paragraphStyle ) {
+        newStyle.textAlignment = (CPTTextAlignment)paragraphStyle.alignment;
+        newStyle.lineBreakMode = paragraphStyle.lineBreakMode;
     }
 
     return [newStyle copy];
@@ -88,45 +72,33 @@
     NSMutableDictionary *myAttributes = [NSMutableDictionary dictionary];
 
     // Font
-    BOOL hasFontAttributeName = (&NSFontAttributeName != NULL);
+    UIFont *styleFont  = nil;
+    NSString *fontName = self.fontName;
 
-    if ( hasFontAttributeName ) {
-        UIFont *styleFont  = nil;
-        NSString *fontName = self.fontName;
+    if ( fontName ) {
+        styleFont = [UIFont fontWithName:fontName size:self.fontSize];
+    }
 
-        if ( fontName ) {
-            styleFont = [UIFont fontWithName:fontName size:self.fontSize];
-        }
-
-        if ( styleFont ) {
-            [myAttributes setValue:styleFont
-                            forKey:NSFontAttributeName];
-        }
+    if ( styleFont ) {
+        [myAttributes setValue:styleFont
+                        forKey:NSFontAttributeName];
     }
 
     // Color
-    BOOL hasColorAttributeName = (&NSForegroundColorAttributeName != NULL);
+    UIColor *styleColor = self.color.uiColor;
 
-    if ( hasColorAttributeName ) {
-        UIColor *styleColor = self.color.uiColor;
-
-        if ( styleColor ) {
-            [myAttributes setValue:styleColor
-                            forKey:NSForegroundColorAttributeName];
-        }
+    if ( styleColor ) {
+        [myAttributes setValue:styleColor
+                        forKey:NSForegroundColorAttributeName];
     }
 
     // Text alignment and line break mode
-    BOOL hasParagraphAttributeName = (&NSParagraphStyleAttributeName != NULL);
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.alignment     = (NSTextAlignment)self.textAlignment;
+    paragraphStyle.lineBreakMode = self.lineBreakMode;
 
-    if ( hasParagraphAttributeName ) {
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        paragraphStyle.alignment     = (NSTextAlignment)self.textAlignment;
-        paragraphStyle.lineBreakMode = self.lineBreakMode;
-
-        [myAttributes setValue:paragraphStyle
-                        forKey:NSParagraphStyleAttributeName];
-    }
+    [myAttributes setValue:paragraphStyle
+                    forKey:NSParagraphStyleAttributeName];
 
     return [myAttributes copy];
 }
@@ -146,38 +118,26 @@
     CPTMutableTextStyle *newStyle = [CPTMutableTextStyle textStyle];
 
     // Font
-    BOOL hasFontAttributeName = (&NSFontAttributeName != NULL);
+    UIFont *styleFont = attributes[NSFontAttributeName];
 
-    if ( hasFontAttributeName ) {
-        UIFont *styleFont = attributes[NSFontAttributeName];
-
-        if ( styleFont ) {
-            newStyle.fontName = styleFont.fontName;
-            newStyle.fontSize = styleFont.pointSize;
-        }
+    if ( styleFont ) {
+        newStyle.fontName = styleFont.fontName;
+        newStyle.fontSize = styleFont.pointSize;
     }
 
     // Color
-    BOOL hasColorAttributeName = (&NSForegroundColorAttributeName != NULL);
+    UIColor *styleColor = attributes[NSForegroundColorAttributeName];
 
-    if ( hasColorAttributeName ) {
-        UIColor *styleColor = attributes[NSForegroundColorAttributeName];
-
-        if ( styleColor ) {
-            newStyle.color = [CPTColor colorWithCGColor:styleColor.CGColor];
-        }
+    if ( styleColor ) {
+        newStyle.color = [CPTColor colorWithCGColor:styleColor.CGColor];
     }
 
     // Text alignment and line break mode
-    BOOL hasParagraphAttributeName = (&NSParagraphStyleAttributeName != NULL);
+    NSParagraphStyle *paragraphStyle = attributes[NSParagraphStyleAttributeName];
 
-    if ( hasParagraphAttributeName ) {
-        NSParagraphStyle *paragraphStyle = attributes[NSParagraphStyleAttributeName];
-
-        if ( paragraphStyle ) {
-            newStyle.textAlignment = (CPTTextAlignment)paragraphStyle.alignment;
-            newStyle.lineBreakMode = paragraphStyle.lineBreakMode;
-        }
+    if ( paragraphStyle ) {
+        newStyle.textAlignment = (CPTTextAlignment)paragraphStyle.alignment;
+        newStyle.lineBreakMode = paragraphStyle.lineBreakMode;
     }
 
     return newStyle;
@@ -293,7 +253,5 @@
     CGContextRestoreGState(context);
     CPTPopCGContext();
 }
-
-#pragma clang diagnostic pop
 
 @end

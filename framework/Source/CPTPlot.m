@@ -941,6 +941,7 @@ NSString *const CPTPlotBindingDataLabels = @"dataLabels"; ///< Plot data labels.
         switch ( [thePlotSpace scaleTypeForCoordinate:coordinate] ) {
             case CPTScaleTypeLinear:
             case CPTScaleTypeLog:
+            case CPTScaleTypeLogModulus:
             {
                 CPTMutableNumericData *mutableNumbers = [self numericDataForNumbers:numbers];
 
@@ -1035,6 +1036,7 @@ NSString *const CPTPlotBindingDataLabels = @"dataLabels"; ///< Plot data labels.
         switch ( [thePlotSpace scaleTypeForCoordinate:coordinate] ) {
             case CPTScaleTypeLinear:
             case CPTScaleTypeLog:
+            case CPTScaleTypeLogModulus:
             {
                 mutableNumbers = [self numericDataForNumbers:numbers];
 
@@ -1448,7 +1450,7 @@ NSString *const CPTPlotBindingDataLabels = @"dataLabels"; ///< Plot data labels.
             }
 
             if ( max >= min ) {
-                range = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(min) length:CPTDecimalFromDouble(max - min)];
+                range = [CPTPlotRange plotRangeWithLocation:@(min) length:@(max - min)];
             }
         }
         else {
@@ -1471,7 +1473,7 @@ NSString *const CPTPlotBindingDataLabels = @"dataLabels"; ///< Plot data labels.
             }
 
             if ( CPTDecimalGreaterThanOrEqualTo(max, min) ) {
-                range = [CPTPlotRange plotRangeWithLocation:min length:CPTDecimalSubtract(max, min)];
+                range = [CPTPlotRange plotRangeWithLocationDecimal:min lengthDecimal:CPTDecimalSubtract(max, min)];
             }
         }
     }
