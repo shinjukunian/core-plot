@@ -3,8 +3,8 @@
 #pragma mark Graphics Context
 
 // linked list to store saved contexts
-static NSMutableArray *pushedContexts   = nil;
-static dispatch_once_t contextOnceToken = 0;
+static NSMutableArray<NSGraphicsContext *> *pushedContexts = nil;
+static dispatch_once_t contextOnceToken                    = 0;
 
 static dispatch_queue_t contextQueue  = NULL;
 static dispatch_once_t queueOnceToken = 0;
@@ -24,12 +24,15 @@ void CPTPushCGContext(CGContextRef newContext)
     dispatch_sync(contextQueue, ^{
         NSGraphicsContext *currentContext = [NSGraphicsContext currentContext];
 
-        if ( newContext && currentContext ) {
+        if ( currentContext ) {
             [pushedContexts addObject:currentContext];
-            [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:newContext flipped:NO]];
         }
         else {
-            [pushedContexts addObject:[NSNull null]];
+            [pushedContexts addObject:(NSGraphicsContext *)[NSNull null]];
+        }
+
+        if ( newContext ) {
+            [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:newContext flipped:NO]];
         }
 
     });
@@ -55,6 +58,10 @@ void CPTPopCGContext(void)
             if ( [lastContext isKindOfClass:[NSGraphicsContext class]] ) {
                 [NSGraphicsContext setCurrentContext:lastContext];
             }
+            else {
+                [NSGraphicsContext setCurrentContext:nil];
+            }
+
             [pushedContexts removeLastObject];
         }
     });

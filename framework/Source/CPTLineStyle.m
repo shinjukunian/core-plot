@@ -1,7 +1,6 @@
 #import "CPTLineStyle.h"
 
 #import "CPTColor.h"
-#import "CPTDefinitions.h"
 #import "CPTFill.h"
 #import "CPTGradient.h"
 #import "CPTMutableLineStyle.h"
@@ -17,7 +16,7 @@
 @property (nonatomic, readwrite, assign) CGLineJoin lineJoin;
 @property (nonatomic, readwrite, assign) CGFloat miterLimit;
 @property (nonatomic, readwrite, assign) CGFloat lineWidth;
-@property (nonatomic, readwrite, strong, nullable) NSArray *dashPattern;
+@property (nonatomic, readwrite, strong, nullable) CPTNumberArray dashPattern;
 @property (nonatomic, readwrite, assign) CGFloat patternPhase;
 @property (nonatomic, readwrite, strong, nullable) CPTColor *lineColor;
 @property (nonatomic, readwrite, strong, nullable) CPTFill *lineFill;
@@ -66,7 +65,7 @@
  **/
 @synthesize lineWidth;
 
-/** @property NSArray *dashPattern
+/** @property CPTNumberArray dashPattern
  *  @brief The dash-and-space pattern for the line. Default is @nil.
  **/
 @synthesize dashPattern;
@@ -220,7 +219,7 @@
     CGContextSetMiterLimit(context, self.miterLimit);
     CGContextSetLineWidth(context, self.lineWidth);
 
-    NSArray *myDashPattern = self.dashPattern;
+    CPTNumberArray myDashPattern = self.dashPattern;
 
     NSUInteger dashCount = myDashPattern.count;
     if ( dashCount > 0 ) {
@@ -303,7 +302,8 @@
         CGPathRef path = CGContextCopyPath(context);
         CGContextBeginPath(context);
 
-        for ( CGFloat width = startWidth; width > CPTFloat(0.0); width -= step ) {
+        CGFloat width = startWidth;
+        while ( width > CPTFloat(0.0) ) {
             CGContextSetLineWidth(context, width);
 
             CGColorRef gradientColor = [gradient newColorAtPosition:CPTFloat(1.0) - width / startWidth];
@@ -312,6 +312,8 @@
 
             CGContextAddPath(context, path);
             CGContextStrokePath(context);
+
+            width -= step;
         }
 
         CGPathRelease(path);

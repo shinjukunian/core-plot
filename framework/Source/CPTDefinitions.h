@@ -237,4 +237,47 @@ CPTEdgeInsets;
 
 extern const CPTEdgeInsets CPTEdgeInsetsZero; ///< Defines a set of stretchable image edge insets where all of the values are zero (@num{0}).
 
-typedef void (^CPTQuickLookImageBlock)(__nonnull CGContextRef context, CGFloat scale, CGRect bounds); ///< Render a Quick Look image into the given context.
+/**
+ *  @brief An array of numbers.
+ **/
+typedef NSArray<NSNumber *> *CPTNumberArray;
+
+/**
+ *  @brief A mutable array of numbers.
+ **/
+typedef NSMutableArray<NSNumber *> *CPTMutableNumberArray;
+
+/**
+ *  @brief A set of numbers.
+ **/
+typedef NSSet<NSNumber *> *CPTNumberSet;
+
+/**
+ *  @brief A mutable set of numbers.
+ **/
+typedef NSMutableSet<NSNumber *> *CPTMutableNumberSet;
+
+/**
+ *  @brief An array of strings.
+ **/
+typedef NSArray<NSString *> *CPTStringArray;
+
+/**
+ *  @brief A mutable array of strings.
+ **/
+typedef NSMutableArray<NSString *> *CPTMutableStringArray;
+
+/**
+ *  @brief An array of strings.
+ **/
+typedef NSDictionary<NSString *, id> *CPTDictionary;
+
+/**
+ *  @brief A mutable array of strings.
+ **/
+typedef NSMutableDictionary<NSString *, id> *CPTMutableDictionary;
+
+/**
+ *  @brief Render a Quick Look image into the given context.
+ **/
+typedef void (^CPTQuickLookImageBlock)(__nonnull CGContextRef context, CGFloat scale, CGRect bounds);
