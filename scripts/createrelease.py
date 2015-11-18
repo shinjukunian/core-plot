@@ -69,8 +69,8 @@ macFramework = join(macProductsDir, 'CorePlot.framework')
 copytree(macFramework, join(macosDir, 'CorePlot.framework'), symlinks=True)
 
 # Build iOS Framework
-RunXcode('CorePlot.xcodeproj', 'CorePlot iOS')
-iOSProductsDir = join(projectRoot, 'build/Release')
+RunXcode('CorePlot.xcodeproj', 'Universal iOS Framework')
+iOSProductsDir = join(projectRoot, 'build/Release-iphoneuniversal')
 iOSFramework = join(iOSProductsDir, 'CorePlot.framework')
 copytree(iOSFramework, join(iosDir, 'CorePlot.framework'), symlinks=True)
 
@@ -82,8 +82,8 @@ iOSHeaderFile = join(join(projectRoot, 'build/Release-universal'), 'CorePlotHead
 copytree(iOSHeaderFile, join(iosDir, 'CorePlotHeaders'))
 
 # Build Docs
-RunXcode('CorePlot.xcodeproj', 'Documentation')
-RunXcode('CorePlot-CocoaTouch.xcodeproj', 'Documentation')
+RunXcode('CorePlot.xcodeproj', 'Documentation-Mac')
+RunXcode('CorePlot.xcodeproj', 'Documentation-iOS')
 
 # Copy Docs
 docDir = join(releaseRootDir, 'Documentation')
