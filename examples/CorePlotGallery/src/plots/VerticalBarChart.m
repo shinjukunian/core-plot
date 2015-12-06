@@ -33,7 +33,7 @@ static const BOOL kUseHorizontalBars = NO;
 
 -(void)killGraph
 {
-    if ( [self.graphs count] ) {
+    if ( self.graphs.count ) {
         CPTGraph *graph = (self.graphs)[0];
 
         CPTPlotSpaceAnnotation *annotation = self.symbolTextAnnotation;
@@ -52,7 +52,7 @@ static const BOOL kUseHorizontalBars = NO;
 
 -(void)renderInGraphHostingView:(CPTGraphHostingView *)hostingView withTheme:(CPTTheme *)theme animated:(BOOL)animated
 {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
     CGRect bounds = hostingView.bounds;
 #else
     CGRect bounds = NSRectToCGRect(hostingView.bounds);
@@ -221,7 +221,7 @@ static const BOOL kUseHorizontalBars = NO;
     theLegend.paddingRight  = textSize * CPTFloat(0.375);
     theLegend.paddingBottom = textSize * CPTFloat(0.375);
 
-    CPTNumberArray plotPoint = (kUseHorizontalBars ? @[@95, @0] : @[@0, @95]);
+    CPTNumberArray *plotPoint = (kUseHorizontalBars ? @[@95, @0] : @[@0, @95]);
 
     CPTPlotSpaceAnnotation *legendAnnotation = [[CPTPlotSpaceAnnotation alloc] initWithPlotSpace:barPlotSpace anchorPlotPoint:plotPoint];
     legendAnnotation.contentLayer = theLegend;
@@ -243,7 +243,7 @@ static const BOOL kUseHorizontalBars = NO;
 {
     NSNumber *value = [self numberForPlot:plot field:CPTBarPlotFieldBarTip recordIndex:index];
 
-    NSLog(@"Bar for '%@' was selected at index %d. Value = %f", plot.identifier, (int)index, [value floatValue]);
+    NSLog(@"Bar for '%@' was selected at index %d. Value = %f", plot.identifier, (int)index, value.floatValue);
 
     CPTGraph *graph = (self.graphs)[0];
 
@@ -263,12 +263,12 @@ static const BOOL kUseHorizontalBars = NO;
     NSNumber *x = @(index);
     NSNumber *y = @2;
 
-    CPTNumberArray anchorPoint = (kUseHorizontalBars ? @[y, x] : @[x, y]);
+    CPTNumberArray *anchorPoint = (kUseHorizontalBars ? @[y, x] : @[x, y]);
 
     // Add annotation
     // First make a string for the y value
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    [formatter setMaximumFractionDigits:2];
+    formatter.maximumFractionDigits = 2;
     NSString *yString = [formatter stringFromNumber:value];
 
     // Now add the annotation to the plot area

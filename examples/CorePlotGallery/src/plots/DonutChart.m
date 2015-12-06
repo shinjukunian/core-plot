@@ -5,7 +5,7 @@ static NSString *const outerChartName = @"Outer";
 
 @interface DonutChart()
 
-@property (nonatomic, readwrite, strong) CPTNumberArray plotData;
+@property (nonatomic, readwrite, strong) CPTNumberArray *plotData;
 
 @end
 
@@ -37,7 +37,7 @@ static NSString *const outerChartName = @"Outer";
 
 -(void)renderInGraphHostingView:(CPTGraphHostingView *)hostingView withTheme:(CPTTheme *)theme animated:(BOOL)animated
 {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
     CGRect bounds = hostingView.bounds;
 #else
     CGRect bounds = NSRectToCGRect(hostingView.bounds);
@@ -154,7 +154,7 @@ static NSString *const outerChartName = @"Outer";
             whiteText.fontSize = self.titleSize * CPTFloat(0.5);
         });
 
-        newLayer                 = [[CPTTextLayer alloc] initWithText:[NSString stringWithFormat:@"%.0f", [self.plotData[index] floatValue]] style:whiteText];
+        newLayer                 = [[CPTTextLayer alloc] initWithText:[NSString stringWithFormat:@"%.0f", self.plotData[index].floatValue] style:whiteText];
         newLayer.fill            = [CPTFill fillWithColor:[CPTColor darkGrayColor]];
         newLayer.cornerRadius    = 5.0;
         newLayer.paddingLeft     = 3.0;

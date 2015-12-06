@@ -9,7 +9,7 @@ static const NSUInteger numberOfPoints = 11;
 
 @interface ControlChart()
 
-@property (nonatomic, readwrite, strong) CPTNumberArray plotData;
+@property (nonatomic, readwrite, strong) CPTNumberArray *plotData;
 @property (nonatomic, readwrite, assign) double meanValue;
 @property (nonatomic, readwrite, assign) double standardError;
 
@@ -39,7 +39,7 @@ static const NSUInteger numberOfPoints = 11;
 -(void)generateData
 {
     if ( self.plotData == nil ) {
-        CPTMutableNumberArray contentArray = [NSMutableArray array];
+        CPTMutableNumberArray *contentArray = [NSMutableArray array];
 
         double sum = 0.0;
 
@@ -55,7 +55,7 @@ static const NSUInteger numberOfPoints = 11;
 
         sum = 0.0;
         for ( NSNumber *value in contentArray ) {
-            double error = [value doubleValue] - self.meanValue;
+            double error = value.doubleValue - self.meanValue;
             sum += error * error;
         }
         double stdDev = sqrt( ( 1.0 / (numberOfPoints - 1) ) * sum );
@@ -65,7 +65,7 @@ static const NSUInteger numberOfPoints = 11;
 
 -(void)renderInGraphHostingView:(CPTGraphHostingView *)hostingView withTheme:(CPTTheme *)theme animated:(BOOL)animated
 {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
     CGRect bounds = hostingView.bounds;
 #else
     CGRect bounds = NSRectToCGRect(hostingView.bounds);
@@ -255,7 +255,7 @@ static const NSUInteger numberOfPoints = 11;
 
         case CPTScatterPlotFieldY:
             if ( plot.identifier == kDataLine ) {
-                number = [self.plotData[index] doubleValue];
+                number = self.plotData[index].doubleValue;
             }
             else if ( plot.identifier == kCenterLine ) {
                 number = self.meanValue;

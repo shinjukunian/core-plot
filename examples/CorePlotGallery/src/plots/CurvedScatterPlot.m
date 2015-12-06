@@ -83,13 +83,13 @@ static NSString *const kSecond = @"Second Derivative";
             NSDictionary<NSString *, NSNumber *> *point1 = dataArray[i - 1];
             NSDictionary<NSString *, NSNumber *> *point2 = dataArray[i];
 
-            double x1   = [point1[@"x"] doubleValue];
-            double x2   = [point2[@"x"] doubleValue];
+            double x1   = point1[@"x"].doubleValue;
+            double x2   = point2[@"x"].doubleValue;
             double dx   = x2 - x1;
             double xLoc = (x1 + x2) * 0.5;
 
-            double y1 = [point1[@"y"] doubleValue];
-            double y2 = [point2[@"y"] doubleValue];
+            double y1 = point1[@"y"].doubleValue;
+            double y2 = point2[@"y"].doubleValue;
             double dy = y2 - y1;
 
             [contentArray addObject:
@@ -110,13 +110,13 @@ static NSString *const kSecond = @"Second Derivative";
             NSDictionary<NSString *, NSNumber *> *point1 = dataArray[i - 1];
             NSDictionary<NSString *, NSNumber *> *point2 = dataArray[i];
 
-            double x1   = [point1[@"x"] doubleValue];
-            double x2   = [point2[@"x"] doubleValue];
+            double x1   = point1[@"x"].doubleValue;
+            double x2   = point2[@"x"].doubleValue;
             double dx   = x2 - x1;
             double xLoc = (x1 + x2) * 0.5;
 
-            double y1 = [point1[@"y"] doubleValue];
-            double y2 = [point2[@"y"] doubleValue];
+            double y1 = point1[@"y"].doubleValue;
+            double y2 = point2[@"y"].doubleValue;
             double dy = y2 - y1;
 
             [contentArray addObject:
@@ -131,7 +131,7 @@ static NSString *const kSecond = @"Second Derivative";
 
 -(void)renderInGraphHostingView:(CPTGraphHostingView *)hostingView withTheme:(CPTTheme *)theme animated:(BOOL)animated
 {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
     CGRect bounds = hostingView.bounds;
 #else
     CGRect bounds = NSRectToCGRect(hostingView.bounds);
@@ -197,6 +197,8 @@ static NSString *const kSecond = @"Second Derivative";
     y.minorGridLineStyle          = minorGridLineStyle;
     y.axisConstraints             = [CPTConstraints constraintWithLowerOffset:0.0];
     y.labelOffset                 = self.titleSize * CPTFloat(0.25);
+    y.alternatingBandFills        = @[[[CPTColor whiteColor] colorWithAlphaComponent:CPTFloat(0.1)], [NSNull null]];
+    y.alternatingBandAnchor       = @0.0;
 
     lineCap.lineStyle = y.axisLineStyle;
     lineCap.fill      = [CPTFill fillWithColor:lineCap.lineStyle.lineColor];
@@ -384,12 +386,12 @@ static NSString *const kSecond = @"Second Derivative";
     NSNumber *x = dataPoint[@"x"];
     NSNumber *y = dataPoint[@"y"];
 
-    CPTNumberArray anchorPoint = @[x, y];
+    CPTNumberArray *anchorPoint = @[x, y];
 
     // Add annotation
     // First make a string for the y value
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    [formatter setMaximumFractionDigits:2];
+    formatter.maximumFractionDigits = 2;
     NSString *yString = [formatter stringFromNumber:y];
 
     // Now add the annotation to the plot area
@@ -436,7 +438,7 @@ static NSString *const kSecond = @"Second Derivative";
     CPTPlotSpaceAnnotation *annotation = self.symbolTextAnnotation;
 
     if ( annotation ) {
-        CPTXYGraph *graph = [self.graphs objectAtIndex:0];
+        CPTXYGraph *graph = (self.graphs)[0];
 
         [graph.plotAreaFrame.plotArea removeAnnotation:annotation];
         self.symbolTextAnnotation = nil;

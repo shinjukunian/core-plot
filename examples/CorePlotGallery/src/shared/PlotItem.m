@@ -7,7 +7,7 @@
 
 #import <tgmath.h>
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
 #else
 // For IKImageBrowser
 #import <Quartz/Quartz.h>
@@ -121,7 +121,9 @@ NSString *const kFinancialPlots = @"Financial Plots";
 {
     CGFloat size;
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV
+    size = 36.0;
+#elif TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
     switch ( UI_USER_INTERFACE_IDIOM() ) {
         case UIUserInterfaceIdiomPad:
             size = 24.0;
@@ -238,7 +240,7 @@ NSString *const kFinancialPlots = @"Financial Plots";
     }
 }
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
 
 -(UIImage *)image
 {
@@ -310,7 +312,7 @@ NSString *const kFinancialPlots = @"Financial Plots";
                                                     bitsPerPixel:32];
 
         NSGraphicsContext *bitmapContext = [NSGraphicsContext graphicsContextWithBitmapImageRep:layerImage];
-        CGContextRef context             = (CGContextRef)[bitmapContext graphicsPort];
+        CGContextRef context             = (CGContextRef)bitmapContext.graphicsPort;
 
         CGContextClearRect( context, CGRectMake(0.0, 0.0, boundsSize.width, boundsSize.height) );
         CGContextSetAllowsAntialiasing(context, true);
@@ -336,7 +338,7 @@ NSString *const kFinancialPlots = @"Financial Plots";
     }
 }
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
 #else
 -(void)setFrameSize:(NSSize)size
 {
@@ -351,7 +353,7 @@ NSString *const kFinancialPlots = @"Financial Plots";
 
     [inView addSubview:hostingView];
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
     hostingView.translatesAutoresizingMaskIntoConstraints = NO;
     [inView addConstraint:[NSLayoutConstraint constraintWithItem:hostingView
                                                        attribute:NSLayoutAttributeLeft
@@ -382,7 +384,7 @@ NSString *const kFinancialPlots = @"Financial Plots";
                                                       multiplier:1.0
                                                         constant:0.0]];
 #else
-    [hostingView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    hostingView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     [hostingView setAutoresizesSubviews:YES];
 #endif
 
@@ -409,7 +411,7 @@ NSString *const kFinancialPlots = @"Financial Plots";
 #pragma mark -
 #pragma mark IKImageBrowserItem methods
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
 #else
 
 -(NSString *)imageUID

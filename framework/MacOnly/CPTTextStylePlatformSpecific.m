@@ -6,7 +6,7 @@
 
 @implementation CPTTextStyle(CPTPlatformSpecificTextStyleExtensions)
 
-/** @property CPTDictionary attributes
+/** @property CPTDictionary *attributes
  *  @brief A dictionary of standard text attributes suitable for formatting an NSAttributedString.
  *
  *  The dictionary will contain values for the following keys that represent the receiver's text style:
@@ -32,7 +32,7 @@
  *  @param attributes A dictionary of standard text attributes.
  *  @return A new CPTTextStyle instance.
  **/
-+(instancetype)textStyleWithAttributes:(CPTDictionary)attributes
++(instancetype)textStyleWithAttributes:(CPTDictionary *)attributes
 {
     CPTMutableTextStyle *newStyle = [CPTMutableTextStyle textStyle];
 
@@ -52,12 +52,12 @@
             newStyle.color = [CPTColor colorWithCGColor:styleColor.CGColor];
         }
         else {
-            const NSInteger numberOfComponents = [styleColor numberOfComponents];
+            const NSInteger numberOfComponents = styleColor.numberOfComponents;
 
             CGFloat *components = calloc( (size_t)numberOfComponents, sizeof(CGFloat) );
             [styleColor getComponents:components];
 
-            CGColorSpaceRef colorSpace = [[styleColor colorSpace] CGColorSpace];
+            CGColorSpaceRef colorSpace = styleColor.colorSpace.CGColorSpace;
             CGColorRef styleCGColor    = CGColorCreate(colorSpace, components);
 
             newStyle.color = [CPTColor colorWithCGColor:styleCGColor];
@@ -82,9 +82,9 @@
 
 /// @cond
 
--(CPTDictionary)attributes
+-(CPTDictionary *)attributes
 {
-    CPTMutableDictionary myAttributes = [NSMutableDictionary dictionary];
+    CPTMutableDictionary *myAttributes = [NSMutableDictionary dictionary];
 
     // Font
     NSFont *styleFont  = nil;
@@ -127,7 +127,7 @@
 
 /// @cond
 
-+(instancetype)textStyleWithAttributes:(CPTDictionary)attributes
++(instancetype)textStyleWithAttributes:(CPTDictionary *)attributes
 {
     CPTMutableTextStyle *newStyle = [CPTMutableTextStyle textStyle];
 
@@ -147,12 +147,12 @@
             newStyle.color = [CPTColor colorWithCGColor:styleColor.CGColor];
         }
         else {
-            const NSInteger numberOfComponents = [styleColor numberOfComponents];
+            const NSInteger numberOfComponents = styleColor.numberOfComponents;
 
             CGFloat *components = calloc( (size_t)numberOfComponents, sizeof(CGFloat) );
             [styleColor getComponents:components];
 
-            CGColorSpaceRef colorSpace = [[styleColor colorSpace] CGColorSpace];
+            CGColorSpaceRef colorSpace = styleColor.colorSpace.CGColorSpace;
             CGColorRef styleCGColor    = CGColorCreate(colorSpace, components);
 
             newStyle.color = [CPTColor colorWithCGColor:styleCGColor];
@@ -199,7 +199,7 @@
     CGSize textSize;
 
     if ( theFont ) {
-        CPTDictionary attributes = @{
+        CPTDictionary *attributes = @{
             NSFontAttributeName: theFont
         };
 
@@ -246,7 +246,7 @@
         paragraphStyle.alignment     = (NSTextAlignment)style.textAlignment;
         paragraphStyle.lineBreakMode = style.lineBreakMode;
 
-        CPTDictionary attributes = @{
+        CPTDictionary *attributes = @{
             NSFontAttributeName: theFont,
             NSForegroundColorAttributeName: foregroundColor,
             NSParagraphStyleAttributeName: paragraphStyle

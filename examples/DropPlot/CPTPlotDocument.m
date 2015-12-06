@@ -95,7 +95,7 @@
                                                     length:@(ceil( (self.maximumValueForYAxis - self.minimumValueForYAxis) / self.majorIntervalLengthForY ) * self.majorIntervalLengthForY)];
 
     // this allows the plot to respond to mouse events
-    [plotSpace setDelegate:self];
+    plotSpace.delegate = self;
     [plotSpace setAllowsUserInteraction:YES];
 
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)newGraph.axisSet;
@@ -163,16 +163,16 @@
         // Read headers from the first line of the file
         [fileContents getParagraphStart:&lineStart end:&lineEnd contentsEnd:&contentsEnd forRange:NSMakeRange(lineEnd, 0)];
 //		currentRange = NSMakeRange(lineStart, contentsEnd - lineStart);
-//		CPTStringArray columnHeaders = [[fileContents substringWithRange:currentRange] arrayByParsingCSVLine];
+//		CPTStringArray * columnHeaders = [[fileContents substringWithRange:currentRange] arrayByParsingCSVLine];
 //		NSLog([columnHeaders objectAtIndex:0]);
 
         while ( lineEnd < length ) {
             [fileContents getParagraphStart:&lineStart end:&lineEnd contentsEnd:&contentsEnd forRange:NSMakeRange(lineEnd, 0)];
             currentRange = NSMakeRange(lineStart, contentsEnd - lineStart);
-            CPTStringArray columnValues = [[fileContents substringWithRange:currentRange] arrayByParsingCSVLine];
+            CPTStringArray *columnValues = [[fileContents substringWithRange:currentRange] arrayByParsingCSVLine];
 
-            double xValue = [columnValues[0] doubleValue];
-            double yValue = [columnValues[1] doubleValue];
+            double xValue = columnValues[0].doubleValue;
+            double yValue = columnValues[1].doubleValue;
             if ( xValue < minX ) {
                 minX = xValue;
             }
@@ -271,12 +271,12 @@
 
     // get the ful range min and max values
     for ( NSDictionary<NSString *, NSNumber *> *xyValues in self.dataPoints ) {
-        double xVal = [xyValues[@"x"] doubleValue];
+        double xVal = xyValues[@"x"].doubleValue;
 
         minX = fmin(xVal, minX);
         maxX = fmax(xVal, maxX);
 
-        double yVal = [xyValues[@"y"] doubleValue];
+        double yVal = xyValues[@"y"].doubleValue;
 
         minY = fmin(yVal, minY);
         maxY = fmax(yVal, maxY);
@@ -312,12 +312,12 @@
 {
     NSSavePanel *pdfSavingDialog = [NSSavePanel savePanel];
 
-    [pdfSavingDialog setAllowedFileTypes:@[@"pdf"]];
+    pdfSavingDialog.allowedFileTypes = @[@"pdf"];
 
     if ( [pdfSavingDialog runModal] == NSOKButton ) {
         NSData *dataForPDF = [self.graph dataForPDFRepresentationOfLayer];
 
-        NSURL *url = [pdfSavingDialog URL];
+        NSURL *url = pdfSavingDialog.URL;
         if ( url ) {
             [dataForPDF writeToURL:url atomically:NO];
         }
@@ -328,15 +328,15 @@
 {
     NSSavePanel *pngSavingDialog = [NSSavePanel savePanel];
 
-    [pngSavingDialog setAllowedFileTypes:@[@"png"]];
+    pngSavingDialog.allowedFileTypes = @[@"png"];
 
     if ( [pngSavingDialog runModal] == NSOKButton ) {
         NSImage *image            = [self.graph imageOfLayer];
-        NSData *tiffData          = [image TIFFRepresentation];
+        NSData *tiffData          = image.TIFFRepresentation;
         NSBitmapImageRep *tiffRep = [NSBitmapImageRep imageRepWithData:tiffData];
-        NSData *pngData           = [tiffRep representationUsingType:NSPNGFileType properties:[NSDictionary dictionary]];
+        NSData *pngData           = [tiffRep representationUsingType:NSPNGFileType properties:@{}];
 
-        NSURL *url = [pngSavingDialog URL];
+        NSURL *url = pngSavingDialog.URL;
         if ( url ) {
             [pngData writeToURL:url atomically:NO];
         }
@@ -411,8 +411,8 @@
 
             double start[2];
             [self.graph.defaultPlotSpace doublePrecisionPlotPoint:start numberOfCoordinates:2 forPlotAreaViewPoint:dragStartInPlotArea];
-            CPTNumberArray anchorPoint = @[@(start[CPTCoordinateX]),
-                                           @(start[CPTCoordinateY])];
+            CPTNumberArray *anchorPoint = @[@(start[CPTCoordinateX]),
+                                            @(start[CPTCoordinateY])];
 
             // now create the annotation
             CPTPlotSpace *defaultSpace = self.graph.defaultPlotSpace;

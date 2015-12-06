@@ -13,7 +13,7 @@ static NSString *const kPlotIdentifier = @"Data Source Plot";
 
 @interface RealTimePlot()
 
-@property (nonatomic, readwrite, strong) CPTMutableNumberArray plotData;
+@property (nonatomic, readwrite, strong) CPTMutableNumberArray *plotData;
 @property (nonatomic, readwrite, assign) NSUInteger currentIndex;
 @property (nonatomic, readwrite, strong) NSTimer *dataTimer;
 
@@ -59,7 +59,7 @@ static NSString *const kPlotIdentifier = @"Data Source Plot";
 
 -(void)renderInGraphHostingView:(CPTGraphHostingView *)hostingView withTheme:(CPTTheme *)theme animated:(BOOL)animated
 {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
     CGRect bounds = hostingView.bounds;
 #else
     CGRect bounds = NSRectToCGRect(hostingView.bounds);
@@ -183,7 +183,7 @@ static NSString *const kPlotIdentifier = @"Data Source Plot";
                      duration:CPTFloat(1.0 / kFrameRate)];
 
         self.currentIndex++;
-        [self.plotData addObject:@( (1.0 - kAlpha) * [[self.plotData lastObject] doubleValue] + kAlpha * arc4random() / (double)UINT32_MAX )];
+        [self.plotData addObject:@( (1.0 - kAlpha) * self.plotData.lastObject.doubleValue + kAlpha * arc4random() / (double)UINT32_MAX )];
         [thePlot insertDataAtIndex:self.plotData.count - 1 numberOfRecords:1];
     }
 }

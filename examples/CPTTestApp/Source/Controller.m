@@ -145,9 +145,9 @@ static NSString *const barPlot2       = @"Bar Plot 2";
     x.minorTicksPerInterval = 2;
     x.majorGridLineStyle    = majorGridLineStyle;
     x.minorGridLineStyle    = minorGridLineStyle;
-    CPTPlotRangeArray exclusionRanges = @[[CPTPlotRange plotRangeWithLocation:@1.99 length:@0.02],
-                                          [CPTPlotRange plotRangeWithLocation:@0.99 length:@0.02],
-                                          [CPTPlotRange plotRangeWithLocation:@2.99 length:@0.02]];
+    CPTPlotRangeArray *exclusionRanges = @[[CPTPlotRange plotRangeWithLocation:@1.99 length:@0.02],
+                                           [CPTPlotRange plotRangeWithLocation:@0.99 length:@0.02],
+                                           [CPTPlotRange plotRangeWithLocation:@2.99 length:@0.02]];
     x.labelExclusionRanges = exclusionRanges;
 
     NSMutableAttributedString *xTitle = [[NSMutableAttributedString alloc] initWithString:@"X Axis\nLine 2"];
@@ -423,7 +423,7 @@ static NSString *const barPlot2       = @"Bar Plot 2";
         NSString *key = (fieldEnum == CPTScatterPlotFieldX ? @"x" : @"y");
         num = (self.arrangedObjects)[index][key];
         if ( fieldEnum == CPTScatterPlotFieldY ) {
-            num = @([num doubleValue] + 1.0);
+            num = @(num.doubleValue + 1.0);
         }
     }
     return num;
@@ -469,12 +469,12 @@ static NSString *const barPlot2       = @"Bar Plot 2";
     NSNumber *x = dataPoint[@"x"];
     NSNumber *y = dataPoint[@"y"];
 
-    CPTNumberArray anchorPoint = @[x, y];
+    CPTNumberArray *anchorPoint = @[x, y];
 
     // Add annotation
     // First make a string for the y value
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    [formatter setMaximumFractionDigits:2];
+    formatter.maximumFractionDigits = 2;
     NSString *yString = [formatter stringFromNumber:y];
 
     // Now add the annotation to the plot area
@@ -510,14 +510,14 @@ static NSString *const barPlot2       = @"Bar Plot 2";
 
     // Determine point of symbol in plot coordinates
 
-    NSNumber *x                = @0;
-    NSNumber *y                = [self numberForPlot:plot field:0 recordIndex:index];
-    CPTNumberArray anchorPoint = @[x, @(index)];
+    NSNumber *x                 = @0;
+    NSNumber *y                 = [self numberForPlot:plot field:0 recordIndex:index];
+    CPTNumberArray *anchorPoint = @[x, @(index)];
 
     // Add annotation
     // First make a string for the y value
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    [formatter setMaximumFractionDigits:2];
+    formatter.maximumFractionDigits = 2;
     NSString *yString = [formatter stringFromNumber:y];
 
     // Now add the annotation to the plot area
@@ -561,12 +561,12 @@ static NSString *const barPlot2       = @"Bar Plot 2";
 {
     NSSavePanel *pdfSavingDialog = [NSSavePanel savePanel];
 
-    [pdfSavingDialog setAllowedFileTypes:@[@"pdf"]];
+    pdfSavingDialog.allowedFileTypes = @[@"pdf"];
 
     if ( [pdfSavingDialog runModal] == NSOKButton ) {
         NSData *dataForPDF = [self.graph dataForPDFRepresentationOfLayer];
 
-        NSURL *url = [pdfSavingDialog URL];
+        NSURL *url = pdfSavingDialog.URL;
         if ( url ) {
             [dataForPDF writeToURL:url atomically:NO];
         }
@@ -577,15 +577,15 @@ static NSString *const barPlot2       = @"Bar Plot 2";
 {
     NSSavePanel *pngSavingDialog = [NSSavePanel savePanel];
 
-    [pngSavingDialog setAllowedFileTypes:@[@"png"]];
+    pngSavingDialog.allowedFileTypes = @[@"png"];
 
     if ( [pngSavingDialog runModal] == NSOKButton ) {
         NSImage *image            = [self.graph imageOfLayer];
-        NSData *tiffData          = [image TIFFRepresentation];
+        NSData *tiffData          = image.TIFFRepresentation;
         NSBitmapImageRep *tiffRep = [NSBitmapImageRep imageRepWithData:tiffData];
-        NSData *pngData           = [tiffRep representationUsingType:NSPNGFileType properties:[NSDictionary dictionary]];
+        NSData *pngData           = [tiffRep representationUsingType:NSPNGFileType properties:@{}];
 
-        NSURL *url = [pngSavingDialog URL];
+        NSURL *url = pngSavingDialog.URL;
         if ( url ) {
             [pngData writeToURL:url atomically:NO];
         }
@@ -638,8 +638,8 @@ static NSString *const barPlot2       = @"Bar Plot 2";
     RotationView *overlayView = [[RotationView alloc] initWithFrame:self.hostView.frame];
     overlayView.rotationDelegate  = self;
     overlayView.rotationTransform = perspectiveRotation;
-    [overlayView setAutoresizingMask:[self.hostView autoresizingMask]];
-    [[self.hostView superview] addSubview:overlayView positioned:NSWindowAbove relativeTo:self.hostView];
+    overlayView.autoresizingMask  = self.hostView.autoresizingMask;
+    [self.hostView.superview addSubview:overlayView positioned:NSWindowAbove relativeTo:self.hostView];
     self.overlayRotationView = overlayView;
 
     [CATransaction begin];
@@ -693,7 +693,9 @@ static NSString *const barPlot2       = @"Bar Plot 2";
 -(IBAction)plotSymbolDemo:(id)sender
 {
     if ( !self.plotSymbolWindow ) {
-        [NSBundle loadNibNamed:@"PlotSymbolDemo" owner:self];
+        [[NSBundle mainBundle] loadNibNamed:@"PlotSymbolDemo"
+                                      owner:self
+                            topLevelObjects:nil];
     }
 
     NSWindow *window = self.plotSymbolWindow;
@@ -703,7 +705,9 @@ static NSString *const barPlot2       = @"Bar Plot 2";
 -(IBAction)axisDemo:(id)sender
 {
     if ( !self.axisDemoWindow ) {
-        [NSBundle loadNibNamed:@"AxisDemo" owner:self];
+        [[NSBundle mainBundle] loadNibNamed:@"AxisDemo"
+                                      owner:self
+                            topLevelObjects:nil];
     }
 
     NSWindow *window = self.axisDemoWindow;
@@ -713,7 +717,9 @@ static NSString *const barPlot2       = @"Bar Plot 2";
 -(IBAction)selectionDemo:(id)sender
 {
     if ( !self.selectionDemoWindow ) {
-        [NSBundle loadNibNamed:@"SelectionDemo" owner:self];
+        [[NSBundle mainBundle] loadNibNamed:@"SelectionDemo"
+                                      owner:self
+                            topLevelObjects:nil];
     }
 
     NSWindow *window = self.selectionDemoWindow;

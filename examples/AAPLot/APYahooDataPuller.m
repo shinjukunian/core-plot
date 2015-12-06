@@ -9,7 +9,7 @@
 @property (nonatomic, readwrite, strong) NSDecimalNumber *overallLow;
 @property (nonatomic, readwrite, strong) NSDecimalNumber *overallVolumeHigh;
 @property (nonatomic, readwrite, strong) NSDecimalNumber *overallVolumeLow;
-@property (nonatomic, readwrite, strong) CPTFinancialDataArray financialData;
+@property (nonatomic, readwrite, strong) CPTFinancialDataArray *financialData;
 
 @property (nonatomic, readwrite, assign) BOOL loadingData;
 @property (nonatomic, readwrite, strong) NSMutableData *receivedData;
@@ -64,18 +64,18 @@ NSTimeInterval timeIntervalForNumberOfWeeks(double numberOfWeeks)
     }
 }
 
--(CPTDictionary)plistRep
+-(CPTDictionary *)plistRep
 {
-    CPTMutableDictionary rep = [NSMutableDictionary dictionaryWithCapacity:7];
+    CPTMutableDictionary *rep = [NSMutableDictionary dictionaryWithCapacity:7];
 
-    rep[@"symbol"]            = [self symbol];
-    rep[@"startDate"]         = [self startDate];
-    rep[@"endDate"]           = [self endDate];
-    rep[@"overallHigh"]       = [self overallHigh];
-    rep[@"overallLow"]        = [self overallLow];
-    rep[@"overallVolumeHigh"] = [self overallVolumeHigh];
-    rep[@"overallVolumeLow"]  = [self overallVolumeLow];
-    rep[@"financialData"]     = [self financialData];
+    rep[@"symbol"]            = self.symbol;
+    rep[@"startDate"]         = self.startDate;
+    rep[@"endDate"]           = self.endDate;
+    rep[@"overallHigh"]       = self.overallHigh;
+    rep[@"overallLow"]        = self.overallLow;
+    rep[@"overallVolumeHigh"] = self.overallVolumeHigh;
+    rep[@"overallVolumeLow"]  = self.overallVolumeLow;
+    rep[@"financialData"]     = self.financialData;
 
     return [NSDictionary dictionaryWithDictionary:rep];
 }
@@ -87,7 +87,7 @@ NSTimeInterval timeIntervalForNumberOfWeeks(double numberOfWeeks)
     return success;
 }
 
--(instancetype)initWithDictionary:(CPTDictionary)aDict targetSymbol:(NSString *)aSymbol targetStartDate:(NSDate *)aStartDate targetEndDate:(NSDate *)anEndDate
+-(instancetype)initWithDictionary:(CPTDictionary *)aDict targetSymbol:(NSString *)aSymbol targetStartDate:(NSDate *)aStartDate targetEndDate:(NSDate *)anEndDate
 {
     self = [super init];
     if ( self != nil ) {
@@ -109,7 +109,7 @@ NSTimeInterval timeIntervalForNumberOfWeeks(double numberOfWeeks)
 
 -(NSString *)pathForSymbol:(NSString *)aSymbol
 {
-    CPTStringArray paths         = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    CPTStringArray *paths        = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = paths[0];
     NSString *docPath            = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist", aSymbol]];
 
@@ -122,30 +122,30 @@ NSTimeInterval timeIntervalForNumberOfWeeks(double numberOfWeeks)
 
     if ( ![[NSFileManager defaultManager] fileExistsAtPath:docPath] ) {
         //if there isn't one in the user's documents directory, see if we ship with this data
-        docPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist", aSymbol]];
+        docPath = [[NSBundle mainBundle].resourcePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist", aSymbol]];
     }
     return docPath;
 }
 
 //Always returns *something*
--(CPTDictionary)dictionaryForSymbol:(NSString *)aSymbol
+-(CPTDictionary *)dictionaryForSymbol:(NSString *)aSymbol
 {
     NSString *path = [self faultTolerantPathForSymbol:aSymbol];
 
-    CPTMutableDictionary localPlistDict = [NSMutableDictionary dictionaryWithContentsOfFile:path];
+    CPTMutableDictionary *localPlistDict = [NSMutableDictionary dictionaryWithContentsOfFile:path];
 
     return localPlistDict;
 }
 
 -(instancetype)initWithTargetSymbol:(NSString *)aSymbol targetStartDate:(NSDate *)aStartDate targetEndDate:(NSDate *)anEndDate
 {
-    CPTDictionary cachedDictionary = [self dictionaryForSymbol:aSymbol];
+    CPTDictionary *cachedDictionary = [self dictionaryForSymbol:aSymbol];
 
     if ( nil != cachedDictionary ) {
         return [self initWithDictionary:cachedDictionary targetSymbol:aSymbol targetStartDate:aStartDate targetEndDate:anEndDate];
     }
 
-    CPTMutableDictionary rep = [NSMutableDictionary dictionaryWithCapacity:7];
+    CPTMutableDictionary *rep = [NSMutableDictionary dictionaryWithCapacity:7];
     rep[@"symbol"]        = aSymbol;
     rep[@"startDate"]     = aStartDate;
     rep[@"endDate"]       = anEndDate;
@@ -182,15 +182,15 @@ NSTimeInterval timeIntervalForNumberOfWeeks(double numberOfWeeks)
     NSDateComponents *compsStart = [gregorian components:unitFlags fromDate:self.targetStartDate];
     NSDateComponents *compsEnd   = [gregorian components:unitFlags fromDate:self.targetEndDate];
 
-    NSString *url = [NSString stringWithFormat:@"http://ichart.yahoo.com/table.csv?s=%@&", [self targetSymbol]];
+    NSString *url = [NSString stringWithFormat:@"http://ichart.yahoo.com/table.csv?s=%@&", self.targetSymbol];
 
-    url = [url stringByAppendingFormat:@"a=%ld&", (long)[compsStart month] - 1];
-    url = [url stringByAppendingFormat:@"b=%ld&", (long)[compsStart day]];
-    url = [url stringByAppendingFormat:@"c=%ld&", (long)[compsStart year]];
+    url = [url stringByAppendingFormat:@"a=%ld&", (long)compsStart.month - 1];
+    url = [url stringByAppendingFormat:@"b=%ld&", (long)compsStart.day];
+    url = [url stringByAppendingFormat:@"c=%ld&", (long)compsStart.year];
 
-    url = [url stringByAppendingFormat:@"d=%ld&", (long)[compsEnd month] - 1];
-    url = [url stringByAppendingFormat:@"e=%ld&", (long)[compsEnd day]];
-    url = [url stringByAppendingFormat:@"f=%ld&", (long)[compsEnd year]];
+    url = [url stringByAppendingFormat:@"d=%ld&", (long)compsEnd.month - 1];
+    url = [url stringByAppendingFormat:@"e=%ld&", (long)compsEnd.day];
+    url = [url stringByAppendingFormat:@"f=%ld&", (long)compsEnd.year];
     url = [url stringByAppendingString:@"g=d&"];
 
     url = [url stringByAppendingString:@"ignore=.csv"];
@@ -257,7 +257,7 @@ NSTimeInterval timeIntervalForNumberOfWeeks(double numberOfWeeks)
     // has enough information to create the NSURLResponse
     // it can be called multiple times, for example in the case of a
     // redirect, so each time we reset the data.
-    [self.receivedData setLength:0];
+    self.receivedData.length = 0;
 }
 
 -(void)cancelDownload
@@ -276,7 +276,7 @@ NSTimeInterval timeIntervalForNumberOfWeeks(double numberOfWeeks)
     self.loadingData  = NO;
     self.receivedData = nil;
     self.connection   = nil;
-    NSLog(@"err = %@", [error localizedDescription]);
+    NSLog(@"err = %@", error.localizedDescription);
     //TODO:report err
 }
 
@@ -292,24 +292,24 @@ NSTimeInterval timeIntervalForNumberOfWeeks(double numberOfWeeks)
     [self parseCSVAndPopulate];
 
     //see if we need to write to file
-    CPTDictionary dictionaryForSymbol = [self dictionaryForSymbol:self.symbol];
+    CPTDictionary *dictionaryForSymbol = [self dictionaryForSymbol:self.symbol];
 
     BOOL sameSymbol      = NO;
     NSString *dictSymbol = dictionaryForSymbol[@"symbol"];
     if ( dictSymbol ) {
-        sameSymbol = [[self symbol] isEqualToString:dictSymbol];
+        sameSymbol = [self.symbol isEqualToString:dictSymbol];
     }
 
     BOOL sameStart    = NO;
     NSDate *dictStart = dictionaryForSymbol[@"startDate"];
     if ( dictStart ) {
-        sameStart = ([[self startDate] compare:dictStart] != NSOrderedSame);
+        sameStart = ([self.startDate compare:dictStart] != NSOrderedSame);
     }
 
     BOOL sameEnd    = NO;
     NSDate *dictEnd = dictionaryForSymbol[@"endDate"];
     if ( dictEnd ) {
-        sameEnd = ([[self startDate] compare:dictEnd] != NSOrderedSame);
+        sameEnd = ([self.startDate compare:dictEnd] != NSOrderedSame);
     }
 
     if ( !sameSymbol || !sameStart || !sameEnd ) {
@@ -322,10 +322,10 @@ NSTimeInterval timeIntervalForNumberOfWeeks(double numberOfWeeks)
 
 -(void)parseCSVAndPopulate
 {
-    CPTStringArray csvLines = [self.csvString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    CPTStringArray *csvLines = [self.csvString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 
-    NSMutableArray<NSDictionary *> *newFinancials = [NSMutableArray arrayWithCapacity:[csvLines count]];
-    CPTDictionary currentFinancial                = nil;
+    NSMutableArray<NSDictionary *> *newFinancials = [NSMutableArray arrayWithCapacity:csvLines.count];
+    CPTDictionary *currentFinancial               = nil;
     NSString *line                                = nil;
 
     self.overallHigh       = [NSDecimalNumber notANumber];
@@ -333,7 +333,7 @@ NSTimeInterval timeIntervalForNumberOfWeeks(double numberOfWeeks)
     self.overallVolumeHigh = [NSDecimalNumber notANumber];
     self.overallVolumeLow  = [NSDecimalNumber notANumber];
 
-    for ( NSUInteger i = 1; i < [csvLines count] - 1; i++ ) {
+    for ( NSUInteger i = 1; i < csvLines.count - 1; i++ ) {
         line             = csvLines[i];
         currentFinancial = [NSDictionary dictionaryWithCSVLine:line];
         [newFinancials addObject:currentFinancial];
@@ -377,7 +377,7 @@ NSTimeInterval timeIntervalForNumberOfWeeks(double numberOfWeeks)
     self.endDate   = self.targetEndDate;
     self.symbol    = self.targetSymbol;
 
-    [self setFinancialData:[NSArray arrayWithArray:newFinancials]];
+    self.financialData = [NSArray arrayWithArray:newFinancials];
     [self notifyPulledData];
 }
 
