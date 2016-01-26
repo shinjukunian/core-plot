@@ -830,6 +830,7 @@ NSString *const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; ///< Plot sym
                     break;
 
                 default:
+                    theAreaBaseValue = CPTDecimalNaN();
                     break;
             }
             if ( !NSDecimalIsNotANumber(&theAreaBaseValue) ) {
