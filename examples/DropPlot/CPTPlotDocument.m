@@ -3,8 +3,8 @@
 
 @interface CPTPlotDocument()
 
-@property (nonatomic, readwrite, strong) IBOutlet CPTGraphHostingView *graphView;
-@property (nonatomic, readwrite, strong) CPTXYGraph *graph;
+@property (nonatomic, readwrite, strong, nullable) IBOutlet CPTGraphHostingView *graphView;
+@property (nonatomic, readwrite, strong, nonnull) CPTXYGraph *graph;
 
 @property (nonatomic, readwrite, assign) double minimumValueForXAxis;
 @property (nonatomic, readwrite, assign) double maximumValueForXAxis;
@@ -14,7 +14,7 @@
 @property (nonatomic, readwrite, assign) double majorIntervalLengthForY;
 @property (nonatomic, readwrite, strong) NSArray<NSDictionary *> *dataPoints;
 
-@property (nonatomic, readwrite, strong) CPTPlotSpaceAnnotation *zoomAnnotation;
+@property (nonatomic, readwrite, strong, nullable) CPTPlotSpaceAnnotation *zoomAnnotation;
 @property (nonatomic, readwrite, assign) CGPoint dragStart;
 @property (nonatomic, readwrite, assign) CGPoint dragEnd;
 
@@ -42,7 +42,7 @@
 
 // #define USE_NSDECIMAL
 
--(instancetype)init
+-(nonnull instancetype)init
 {
     self = [super init];
     if ( self ) {
@@ -54,12 +54,12 @@
     return self;
 }
 
--(NSString *)windowNibName
+-(nullable NSString *)windowNibName
 {
     return @"CPTPlotDocument";
 }
 
--(void)windowControllerDidLoadNib:(NSWindowController *)windowController
+-(void)windowControllerDidLoadNib:(nonnull NSWindowController *)windowController
 {
     // Create graph from theme
     CPTXYGraph *newGraph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
@@ -128,7 +128,7 @@
 #pragma mark -
 #pragma mark Data loading methods
 
--(NSData *)dataOfType:(NSString *)typeName error:(NSError *__autoreleasing *)outError
+-(nullable NSData *)dataOfType:(nonnull NSString *)typeName error:(NSError *__autoreleasing __nullable *)outError
 {
     // Insert code here to write your document to data of the specified type. If the given outError != NULL, ensure that you set *outError when returning nil.
 
@@ -142,14 +142,14 @@
     return nil;
 }
 
--(BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError *__autoreleasing *)outError
+-(BOOL)readFromData:(nonnull NSData *)data ofType:(NSString *)typeName error:(NSError *__autoreleasing __nullable *)outError
 {
     if ( [typeName isEqualToString:@"CSVDocument"] ) {
-        double minX = MAXFLOAT;
-        double maxX = -MAXFLOAT;
+        double minX = (double)INFINITY;
+        double maxX = -(double)INFINITY;
 
-        double minY = MAXFLOAT;
-        double maxY = -MAXFLOAT;
+        double minY = (double)INFINITY;
+        double maxY = -(double)INFINITY;
 
         NSMutableArray<NSDictionary *> *newData = [[NSMutableArray alloc] init];
 
@@ -263,11 +263,11 @@
 
 -(IBAction)zoomOut
 {
-    double minX = MAXFLOAT;
-    double maxX = -MAXFLOAT;
+    double minX = (double)INFINITY;
+    double maxX = -(double)INFINITY;
 
-    double minY = MAXFLOAT;
-    double maxY = -MAXFLOAT;
+    double minY = (double)INFINITY;
+    double maxY = -(double)INFINITY;
 
     // get the ful range min and max values
     for ( NSDictionary<NSString *, NSNumber *> *xyValues in self.dataPoints ) {
@@ -308,7 +308,7 @@
 #pragma mark -
 #pragma mark PDF / image export
 
--(IBAction)exportToPDF:(id)sender
+-(IBAction)exportToPDF:(nullable id)sender
 {
     NSSavePanel *pdfSavingDialog = [NSSavePanel savePanel];
 
@@ -324,7 +324,7 @@
     }
 }
 
--(IBAction)exportToPNG:(id)sender
+-(IBAction)exportToPNG:(nullable id)sender
 {
     NSSavePanel *pngSavingDialog = [NSSavePanel savePanel];
 
@@ -346,12 +346,12 @@
 #pragma mark -
 #pragma mark Plot Data Source Methods
 
--(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
+-(NSUInteger)numberOfRecordsForPlot:(nonnull CPTPlot *)plot
 {
     return self.dataPoints.count;
 }
 
--(id)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
+-(nullable id)numberForPlot:(nonnull CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
 {
     NSString *key = (fieldEnum == CPTScatterPlotFieldX ? @"x" : @"y");
 
@@ -361,7 +361,7 @@
 #pragma mark -
 #pragma mark Plot Space Delegate Methods
 
--(BOOL)plotSpace:(CPTPlotSpace *)space shouldHandlePointingDeviceDraggedEvent:(id)event atPoint:(CGPoint)interactionPoint
+-(BOOL)plotSpace:(nonnull CPTPlotSpace *)space shouldHandlePointingDeviceDraggedEvent:(nonnull CPTNativeEvent *)event atPoint:(CGPoint)interactionPoint
 {
     CPTPlotSpaceAnnotation *annotation = self.zoomAnnotation;
 
@@ -388,7 +388,7 @@
     return NO;
 }
 
--(BOOL)plotSpace:(CPTPlotSpace *)space shouldHandlePointingDeviceDownEvent:(id)event atPoint:(CGPoint)interactionPoint
+-(BOOL)plotSpace:(nonnull CPTPlotSpace *)space shouldHandlePointingDeviceDownEvent:(nonnull CPTNativeEvent *)event atPoint:(CGPoint)interactionPoint
 {
     if ( !self.zoomAnnotation ) {
         self.dragStart = interactionPoint;
@@ -429,15 +429,15 @@
     return NO;
 }
 
--(BOOL)plotSpace:(CPTPlotSpace *)space shouldHandlePointingDeviceUpEvent:(id)event atPoint:(CGPoint)interactionPoint
+-(BOOL)plotSpace:(nonnull CPTPlotSpace *)space shouldHandlePointingDeviceUpEvent:(nonnull CPTNativeEvent *)event atPoint:(CGPoint)interactionPoint
 {
     CPTPlotSpaceAnnotation *annotation = self.zoomAnnotation;
 
     if ( annotation ) {
         self.dragEnd = interactionPoint;
 
-// double-click to completely zoom out
-        if ( [event clickCount] == 2 ) {
+        // double-click to completely zoom out
+        if ( event.clickCount == 2 ) {
             CPTPlotArea *plotArea     = self.graph.plotAreaFrame.plotArea;
             CGPoint dragEndInPlotArea = [self.graph convertPoint:interactionPoint toLayer:plotArea];
 
@@ -446,11 +446,11 @@
             }
         }
         else if ( !CGPointEqualToPoint(self.dragStart, self.dragEnd) ) {
-// no accidental drag, so zoom in
+            // no accidental drag, so zoom in
             [self zoomIn];
         }
 
-// and we're done with the drag
+        // and we're done with the drag
         [self.graph.plotAreaFrame.plotArea removeAnnotation:annotation];
         self.zoomAnnotation = nil;
 
@@ -461,7 +461,7 @@
     return NO;
 }
 
--(BOOL)plotSpace:(CPTPlotSpace *)space shouldHandlePointingDeviceCancelledEvent:(id)event atPoint:(CGPoint)interactionPoint
+-(BOOL)plotSpace:(nonnull CPTPlotSpace *)space shouldHandlePointingDeviceCancelledEvent:(nonnull CPTNativeEvent *)event atPoint:(CGPoint)interactionPoint
 {
     CPTPlotSpaceAnnotation *annotation = self.zoomAnnotation;
 
