@@ -25,9 +25,9 @@
  *  @endif
  **/
 
-NSString *const CPTPieChartBindingPieSliceWidthValues   = @"sliceWidths";        ///< Pie slice widths.
-NSString *const CPTPieChartBindingPieSliceFills         = @"sliceFills";         ///< Pie slice interior fills.
-NSString *const CPTPieChartBindingPieSliceRadialOffsets = @"sliceRadialOffsets"; ///< Pie slice radial offsets.
+CPTPieChartBinding const CPTPieChartBindingPieSliceWidthValues   = @"sliceWidths";        ///< Pie slice widths.
+CPTPieChartBinding const CPTPieChartBindingPieSliceFills         = @"sliceFills";         ///< Pie slice interior fills.
+CPTPieChartBinding const CPTPieChartBindingPieSliceRadialOffsets = @"sliceRadialOffsets"; ///< Pie slice radial offsets.
 
 /// @cond
 @interface CPTPieChart()
@@ -724,7 +724,7 @@ static const CGFloat colorLookupTable[10][3] =
             angle   += pieSliceValue * pieRange;
             break;
     }
-    return (CGFloat)fmod(angle, 2.0 * M_PI);
+    return fmod( angle, CPTFloat(2.0 * M_PI) );
 }
 
 -(void)addSliceToPath:(nonnull CGMutablePathRef)slicePath centerPoint:(CGPoint)center startingAngle:(CGFloat)startingAngle finishingAngle:(CGFloat)finishingAngle

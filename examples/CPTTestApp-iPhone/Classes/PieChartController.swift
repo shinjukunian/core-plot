@@ -13,7 +13,7 @@ class PieChartController : UIViewController, CPTPieChartDataSource, CPTPieChartD
 
         // Create graph from theme
         let newGraph = CPTXYGraph(frame: .zero)
-        newGraph.apply(CPTTheme(named: kCPTDarkGradientTheme))
+        newGraph.apply(CPTTheme(named: .darkGradientTheme))
 
         let hostingView = self.view as! CPTGraphHostingView
         hostingView.hostedGraph = newGraph
@@ -36,7 +36,7 @@ class PieChartController : UIViewController, CPTPieChartDataSource, CPTPieChartD
         let piePlot = CPTPieChart(frame: .zero)
         piePlot.dataSource      = self
         piePlot.pieRadius       = 131.0
-        piePlot.identifier      = "Pie Chart 1"
+        piePlot.identifier      = NSString.init(string: "Pie Chart 1")
         piePlot.startAngle      = CGFloat(M_PI_4)
         piePlot.sliceDirection  = .counterClockwise
         piePlot.centerAnchor    = CGPoint(x: 0.5, y: 0.38)
@@ -54,7 +54,7 @@ class PieChartController : UIViewController, CPTPieChartDataSource, CPTPieChartD
         return UInt(self.dataForChart.count)
     }
 
-    func number(for plot: CPTPlot, field: UInt, record: UInt) -> AnyObject?
+    func number(for plot: CPTPlot, field: UInt, record: UInt) -> Any?
     {
         if Int(record) > self.dataForChart.count {
             return nil
@@ -83,7 +83,7 @@ class PieChartController : UIViewController, CPTPieChartDataSource, CPTPieChartD
         return label
     }
 
-    func radialOffsetForPieChart(piePlot: CPTPieChart, recordIndex: UInt) -> CGFloat
+    func radialOffset(for piePlot: CPTPieChart, record recordIndex: UInt) -> CGFloat
     {
         var offset: CGFloat = 0.0
 
@@ -96,7 +96,7 @@ class PieChartController : UIViewController, CPTPieChartDataSource, CPTPieChartD
 
     // MARK: - Delegate Methods
     
-    private func pieChart(plot: CPTPlot, sliceWasSelectedAtRecordIndex recordIndex: UInt)
+    private func pieChart(_ plot: CPTPlot, sliceWasSelectedAtRecordIndex recordIndex: UInt)
     {
         self.pieGraph?.title = "Selected index: \(recordIndex)"
     }

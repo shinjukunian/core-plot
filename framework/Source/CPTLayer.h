@@ -5,7 +5,13 @@
 /// @file
 
 @class CPTGraph;
+@class CPTLayer;
 @class CPTShadow;
+
+/**
+ *  @brief Layer notification type.
+ **/
+typedef NSString *CPTLayerNotification cpt_swift_struct;
 
 /// @name Layout
 /// @{
@@ -13,9 +19,29 @@
 /** @brief Notification sent by all layers when the layer @link CALayer::bounds bounds @endlink change.
  *  @ingroup notification
  **/
-extern NSString *__nonnull const CPTLayerBoundsDidChangeNotification;
+extern CPTLayerNotification __nonnull const CPTLayerBoundsDidChangeNotification NS_SWIFT_NAME(boundsDidChange);
 
 /// @}
+
+/**
+ *  @brief An array of CPTLayer objects.
+ **/
+typedef NSArray<CPTLayer *> CPTLayerArray;
+
+/**
+ *  @brief A mutable array of CPTLayer objects.
+ **/
+typedef NSMutableArray<CPTLayer *> CPTMutableLayerArray;
+
+/**
+ *  @brief A set of CPTLayer objects.
+ **/
+typedef NSSet<CPTLayer *> CPTLayerSet;
+
+/**
+ *  @brief A mutable set of CPTLayer objects.
+ **/
+typedef NSMutableSet<CPTLayer *> CPTMutableLayerSet;
 
 /**
  *  @brief An array of CALayer objects.
