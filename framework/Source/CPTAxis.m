@@ -1836,7 +1836,12 @@ NSDecimal CPTNiceLength(NSDecimal length)
 
         if ( range.lengthDouble != 0.0 ) {
             CPTCoordinate orthogonalCoordinate = CPTOrthogonalCoordinate(self.coordinate);
-            CPTSign direction                  = self.tickDirection;
+
+            CPTSign direction = self.tickLabelDirection;
+
+            if ( direction == CPTSignNone ) {
+                direction = self.tickDirection;
+            }
 
             
             
@@ -2319,7 +2324,12 @@ NSDecimal CPTNiceLength(NSDecimal length)
             }
         }
 
-        [self updateMajorTickLabels];
+        if ( self.labelingPolicy == CPTAxisLabelingPolicyNone ) {
+            [self updateCustomTickLabels];
+        }
+        else {
+            [self updateMajorTickLabels];
+        }
     }
 }
 
@@ -2359,7 +2369,12 @@ NSDecimal CPTNiceLength(NSDecimal length)
             }
         }
 
-        [self updateMinorTickLabels];
+        if ( self.labelingPolicy == CPTAxisLabelingPolicyNone ) {
+            [self updateCustomTickLabels];
+        }
+        else {
+            [self updateMinorTickLabels];
+        }
     }
 }
 
