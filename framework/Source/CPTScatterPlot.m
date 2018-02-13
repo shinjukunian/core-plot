@@ -488,9 +488,9 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
     }
 
     else {
-        CPTPlotRangeComparisonResult *xRangeFlags = malloc(dataCount * sizeof(CPTPlotRangeComparisonResult) );
-        CPTPlotRangeComparisonResult *yRangeFlags = malloc(dataCount * sizeof(CPTPlotRangeComparisonResult) );
-        BOOL *nanFlags                            = malloc(dataCount * sizeof(BOOL) );
+        CPTPlotRangeComparisonResult *xRangeFlags = calloc(dataCount, sizeof(CPTPlotRangeComparisonResult) );
+        CPTPlotRangeComparisonResult *yRangeFlags = calloc(dataCount, sizeof(CPTPlotRangeComparisonResult) );
+        BOOL *nanFlags                            = calloc(dataCount, sizeof(BOOL) );
 
         CPTPlotRange *xRange = xyPlotSpace.xRange;
         CPTPlotRange *yRange = xyPlotSpace.yRange;
@@ -809,8 +809,8 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
     [super renderAsVectorInContext:context];
 
     // Calculate view points, and align to user space
-    CGPoint *viewPoints  = malloc(dataCount * sizeof(CGPoint) );
-    BOOL *drawPointFlags = malloc(dataCount * sizeof(BOOL) );
+    CGPoint *viewPoints  = calloc(dataCount, sizeof(CGPoint) );
+    BOOL *drawPointFlags = calloc(dataCount, sizeof(BOOL) );
 
     CPTXYPlotSpace *thePlotSpace = (CPTXYPlotSpace *)self.plotSpace;
     
@@ -1505,10 +1505,10 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
         NSUInteger n = indexRange.length - 1;
 
         // rhs vector
-        CGPoint *a = malloc(n * sizeof(CGPoint) );
-        CGPoint *b = malloc(n * sizeof(CGPoint) );
-        CGPoint *c = malloc(n * sizeof(CGPoint) );
-        CGPoint *r = malloc(n * sizeof(CGPoint) );
+        CGPoint *a = calloc(n, sizeof(CGPoint) );
+        CGPoint *b = calloc(n, sizeof(CGPoint) );
+        CGPoint *c = calloc(n, sizeof(CGPoint) );
+        CGPoint *r = calloc(n, sizeof(CGPoint) );
 
         // left most segment
         a[0] = CGPointZero;
@@ -1657,8 +1657,8 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
     }
 
     // Calculate view points
-    CGPoint *viewPoints  = malloc(dataCount * sizeof(CGPoint) );
-    BOOL *drawPointFlags = malloc(dataCount * sizeof(BOOL) );
+    CGPoint *viewPoints  = calloc(dataCount, sizeof(CGPoint) );
+    BOOL *drawPointFlags = calloc(dataCount, sizeof(BOOL) );
 
     for ( NSUInteger i = 0; i < dataCount; i++ ) {
         drawPointFlags[i] = YES;
@@ -2158,8 +2158,8 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
     NSUInteger dataCount     = self.cachedDataCount;
 
     if ( theGraph && thePlotArea && !self.hidden && dataCount ) {
-        CGPoint *viewPoints  = malloc(dataCount * sizeof(CGPoint) );
-        BOOL *drawPointFlags = malloc(dataCount * sizeof(BOOL) );
+        CGPoint *viewPoints  = calloc(dataCount, sizeof(CGPoint) );
+        BOOL *drawPointFlags = calloc(dataCount, sizeof(BOOL) );
 
         CPTXYPlotSpace *thePlotSpace = (CPTXYPlotSpace *)self.plotSpace;
         [self calculatePointsToDraw:drawPointFlags forPlotSpace:thePlotSpace includeVisiblePointsOnly:NO numberOfPoints:dataCount];
