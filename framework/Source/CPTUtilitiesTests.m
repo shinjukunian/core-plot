@@ -50,7 +50,7 @@
     XCTAssertEqual(CPTDecimalIntegerValue([d decimalValue]), (NSInteger)42, @"Result incorrect");
 
     d = [NSDecimalNumber decimalNumberWithString:@"42.1"];
-    XCTAssertEqual( (NSInteger)CPTDecimalIntegerValue([d decimalValue]), (NSInteger)42, @"Result incorrect" );
+    XCTAssertEqual((NSInteger)CPTDecimalIntegerValue([d decimalValue]), (NSInteger)42, @"Result incorrect");
 }
 
 -(void)testCPTDecimalFloatValue
@@ -130,12 +130,12 @@
 {
     NSArray *strings =
         @[
-        @"0", // validation tests
-        @"1",
-        @"1.8446744073709551615", // 64/65 bit tests (radar 32520109)
-        @"1.8446744073709551616",
-        @"9.821426272392280061", // radar 25465729 tests
-        @"9.821426272392280060",
+            @"0", // validation tests
+            @"1",
+            @"1.8446744073709551615", // 64/65 bit tests (radar 32520109)
+            @"1.8446744073709551616",
+            @"9.821426272392280061", // radar 25465729 tests
+            @"9.821426272392280060",
     ];
 
     for ( NSString *string in strings ) {
@@ -634,11 +634,11 @@
 {
     XCTAssertEqual(CPTInverseLogModulus(0.0), 0.0, @"CPTInverseLogModulus(0.0)");
 
-    XCTAssertEqualWithAccuracy(CPTInverseLogModulus(log10(11.0) ), 10.0, 1.0e-7, @"CPTInverseLogModulus(log10(11.0))");
-    XCTAssertEqualWithAccuracy(CPTInverseLogModulus(-log10(11.0) ), -10.0, 1.0e-7, @"CPTInverseLogModulus(-log10(11.0))");
+    XCTAssertEqualWithAccuracy(CPTInverseLogModulus(log10(11.0)), 10.0, 1.0e-7, @"CPTInverseLogModulus(log10(11.0))");
+    XCTAssertEqualWithAccuracy(CPTInverseLogModulus(-log10(11.0)), -10.0, 1.0e-7, @"CPTInverseLogModulus(-log10(11.0))");
 
-    XCTAssertEqualWithAccuracy(CPTInverseLogModulus(log10(101.0) ), 100.0, 1.0e-7, @"CPTInverseLogModulus(log10(101.0))");
-    XCTAssertEqualWithAccuracy(CPTInverseLogModulus(-log10(101.0) ), -100.0, 1.0e-7, @"CPTInverseLogModulus(-log10(101.0))");
+    XCTAssertEqualWithAccuracy(CPTInverseLogModulus(log10(101.0)), 100.0, 1.0e-7, @"CPTInverseLogModulus(log10(101.0))");
+    XCTAssertEqualWithAccuracy(CPTInverseLogModulus(-log10(101.0)), -100.0, 1.0e-7, @"CPTInverseLogModulus(-log10(101.0))");
 }
 
 /// @endcond

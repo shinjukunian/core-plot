@@ -6,7 +6,6 @@
 #import "PlotGalleryController.h"
 
 #import "dlfcn.h"
-// #define EMBED_NU  1
 
 static const CGFloat CPT_SPLIT_VIEW_MIN_LHS_WIDTH = 150.0;
 
@@ -51,53 +50,31 @@ static NSString *const kThemeTableViewControllerDefaultTheme = @"Default";
 
 -(void)awakeFromNib
 {
+    [super awakeFromNib];
+
     [[PlotGallery sharedPlotGallery] sortByTitle];
 
     self.splitView.delegate = self;
 
-    [self.imageBrowser setDelegate:self];
-    [self.imageBrowser setDataSource:self];
-    [self.imageBrowser setCellsStyleMask:IKCellsStyleShadowed | IKCellsStyleTitled]; // | IKCellsStyleSubtitled];
+    self.imageBrowser.delegate       = self;
+    self.imageBrowser.dataSource     = self;
+    self.imageBrowser.cellsStyleMask = IKCellsStyleShadowed | IKCellsStyleTitled; // | IKCellsStyleSubtitled;
 
     [self.imageBrowser reloadData];
 
     self.hostingView.delegate = self;
 
     [self setupThemes];
-
-#ifdef EMBED_NU
-    // Setup a Nu console without the help of the Nu include files or
-    // an explicit link of the Nu framework, which may not be installed
-    nuHandle = dlopen("/Library/Frameworks/Nu.framework/Nu", RTLD_LAZY);
-
-    if ( nuHandle ) {
-        NSString *consoleStartup =
-            @"(progn \
-           (load \"console\") \
-           (set $console ((NuConsoleWindowController alloc) init)))";
-
-        Class nuClass = NSClassFromString(@"Nu");
-        id parser     = [nuClass performSelector:@selector(parser)];
-        id code       = [parser performSelector:@selector(parse:) withObject:consoleStartup];
-        [parser performSelector:@selector(eval:) withObject:code];
-    }
-#endif
 }
 
 -(void)dealloc
 {
     [self setPlotItem:nil];
 
-    [splitView setDelegate:nil];
-    [imageBrowser setDataSource:nil];
-    [imageBrowser setDelegate:nil];
-    [hostingView setDelegate:nil];
-
-#ifdef EMBED_NU
-    if ( nuHandle ) {
-        dlclose(nuHandle);
-    }
-#endif
+    splitView.delegate      = nil;
+    imageBrowser.dataSource = nil;
+    imageBrowser.delegate   = nil;
+    hostingView.delegate    = nil;
 }
 
 -(void)setFrameSize:(NSSize)newSize
@@ -190,7 +167,7 @@ static NSString *const kThemeTableViewControllerDefaultTheme = @"Default";
         NSGraphicsContext *bitmapContext = [NSGraphicsContext graphicsContextWithBitmapImageRep:layerImage];
         CGContextRef context             = (CGContextRef)bitmapContext.graphicsPort;
 
-        CGContextClearRect(context, CGRectMake(0.0, 0.0, boundsSize.width, boundsSize.height) );
+        CGContextClearRect(context, CGRectMake(0.0, 0.0, boundsSize.width, boundsSize.height));
         CGContextSetAllowsAntialiasing(context, true);
         CGContextSetShouldSmoothFonts(context, false);
         [imageView.layer renderInContext:context];
@@ -293,9 +270,9 @@ static NSString *const kThemeTableViewControllerDefaultTheme = @"Default";
     NSValue *groupRange = [NSValue valueWithRange:NSMakeRange(offset, [[PlotGallery sharedPlotGallery] numberOfRowsInSection:index])];
 
     return @{
-    IKImageBrowserGroupStyleKey: @(IKGroupDisclosureStyle),
-    IKImageBrowserGroupTitleKey: groupTitle,
-    IKImageBrowserGroupRangeKey: groupRange
+        IKImageBrowserGroupStyleKey: @(IKGroupDisclosureStyle),
+        IKImageBrowserGroupTitleKey: groupTitle,
+        IKImageBrowserGroupRangeKey: groupRange
     };
 }
 

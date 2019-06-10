@@ -54,7 +54,7 @@
         else {
             const NSInteger numberOfComponents = styleColor.numberOfComponents;
 
-            CGFloat *components = calloc( (size_t)numberOfComponents, sizeof(CGFloat) );
+            CGFloat *components = calloc((size_t)numberOfComponents, sizeof(CGFloat));
             [styleColor getComponents:components];
 
             CGColorSpaceRef colorSpace = styleColor.colorSpace.CGColorSpace;
@@ -160,7 +160,7 @@
         else {
             const NSInteger numberOfComponents = styleColor.numberOfComponents;
 
-            CGFloat *components = calloc( (size_t)numberOfComponents, sizeof(CGFloat) );
+            CGFloat *components = calloc((size_t)numberOfComponents, sizeof(CGFloat));
             [styleColor getComponents:components];
 
             CGColorSpaceRef colorSpace = styleColor.colorSpace.CGColorSpace;
@@ -255,9 +255,9 @@
         paragraphStyle.lineBreakMode = style.lineBreakMode;
 
         CPTDictionary *attributes = @{
-            NSFontAttributeName: theFont,
-            NSForegroundColorAttributeName: foregroundColor,
-            NSParagraphStyleAttributeName: paragraphStyle
+                                        NSFontAttributeName: theFont,
+                                        NSForegroundColorAttributeName: foregroundColor,
+                                        NSParagraphStyleAttributeName: paragraphStyle
         };
         [self drawWithRect:NSRectFromCGRect(rect)
                    options:CPTStringDrawingOptions
