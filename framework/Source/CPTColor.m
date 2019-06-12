@@ -11,6 +11,8 @@
 
 #if TARGET_OS_OSX
 @property (nonatomic, readonly, nullable) NSColor *nsColorCache;
+#else
+@property (nonatomic, readonly, nullable) UIColor *uiColorCache;
 #endif
 @end
 
@@ -52,6 +54,30 @@
     }
 }
 
+#else
+
+/** @internal
+ *  @property nullable UIColor *uiColorCache
+ *  @brief The UIColor to wrap around.
+ **/
+@synthesize uiColorCache;
+
+/** @property nonnull UIColor *uiColor
+ *  @brief The UIColor to wrap around.
+ **/
+
+-(UIColor *)_uiColor
+{
+    UIColor *theUIColor = self.uiColorCache;
+    
+    if ( theUIColor ) {
+        return theUIColor;
+    }
+    else {
+        return [UIColor colorWithCGColor:self.cgColor];
+    }
+}
+
 #endif
 
 /** @property nonnull CGColorRef cgColor
@@ -66,6 +92,12 @@
     if ( theNSColor ) {
         return theNSColor.CGColor;
     }
+#else
+    UIColor *theUIColor = self.uiColorCache;
+    if ( theUIColor ) {
+        return theUIColor.CGColor;
+    }
+    
 #endif
     return cgColor;
 }
@@ -383,6 +415,20 @@
     return [[self alloc] initWithNSColor:newNSColor];
 }
 
+#else
+
+/** @brief Creates and returns a new CPTColor instance initialized with the provided UIColor.
+ *
+ *  UIColor can be a dynamic system color or catalog color. This adds support for dark mode in iOS13.
+ *
+ *  @param newUIColor The color to wrap.
+ *  @return A new CPTColor instance initialized with the provided UIColor.
+ **/
++(nonnull instancetype)colorWithUIColor:(nonnull UIColor *)newUIColor
+{
+    return [[self alloc] initWithUIColor:newUIColor];
+}
+
 #endif
 
 #pragma mark -
@@ -437,6 +483,22 @@
 {
     if ((self = [super init])) {
         nsColorCache = newNSColor;
+    }
+    return self;
+}
+
+#else
+/** @brief Initializes a newly allocated CPTColor object with the provided UIColor.
+ *
+ *  UIColor can be a dynamic system color or catalog color. This adds support for dark mode in iOS13.
+ *
+ *  @param newNSColor The color to wrap.
+ *  @return The initialized CPTColor object.
+ **/
+-(nonnull instancetype)initWithUIColor:(nonnull UIColor *)newUIColor
+{
+    if ((self = [super init])) {
+        uiColorCache = newUIColor;
     }
     return self;
 }

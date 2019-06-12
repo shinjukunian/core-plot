@@ -31,6 +31,8 @@
 
 #if TARGET_OS_OSX
 +(nonnull instancetype)colorWithNSColor:(nonnull NSColor *)newNSColor;
+#else
++(nonnull instancetype)colorWithUIColor:(nonnull UIColor *)newUIColor;
 #endif
 
 /// @}
@@ -43,6 +45,8 @@
 
 #if TARGET_OS_OSX
 -(nonnull instancetype)initWithNSColor:(nonnull NSColor *)newNSColor NS_DESIGNATED_INITIALIZER;
+#else
+-(nonnull instancetype)initWithUIColor:(nonnull UIColor *)newUIColor NS_DESIGNATED_INITIALIZER;
 #endif
 
 -(nonnull instancetype)colorWithAlphaComponent:(CGFloat)alpha;

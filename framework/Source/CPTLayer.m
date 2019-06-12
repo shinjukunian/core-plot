@@ -339,7 +339,11 @@ CPTLayerNotification const CPTLayerBoundsDidChangeNotification = @"CPTLayerBound
         }
 #pragma clang diagnostic pop
 #else
+        UITraitCollection *oldTraitCollection = UITraitCollection.currentTraitCollection;
+        UITraitCollection *currentTraitCollectin= ( (UIView*)self.graph.hostingView).traitCollection;
+        UITraitCollection.currentTraitCollection=currentTraitCollectin;
         [super display];
+        UITraitCollection.currentTraitCollection=oldTraitCollection;
 #endif
     }
 }
