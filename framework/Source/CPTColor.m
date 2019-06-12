@@ -535,7 +535,14 @@
         NSColor *newNSColor = [theNSColor colorWithAlphaComponent:alpha];
         return [[self class] colorWithNSColor:newNSColor];
     }
+#else
+    UIColor *theUIColor = self.uiColorCache;
+    if ( theUIColor ) {
+        UIColor *newUIColor = [theUIColor colorWithAlphaComponent:alpha];
+        return [[self class] colorWithUIColor:newUIColor];
+    }
 #endif
+    
     CGColorRef newCGColor = CGColorCreateCopyWithAlpha(self.cgColor, alpha);
     CPTColor *newColor    = [[self class] colorWithCGColor:newCGColor];
 
@@ -564,6 +571,8 @@
 {
 #if TARGET_OS_OSX
     [coder encodeConditionalObject:self.nsColorCache forKey:@"CPTColor.nsColorCache"];
+#else
+    [coder encodeConditionalObject:self.uiColorCache forKey:@"CPTColor.uiColorCache"];
 #endif
 
     CGColorRef theColor = self.cgColor;
@@ -596,6 +605,13 @@
         if ( decodedNSColor ) {
             nsColorCache = decodedNSColor;
         }
+#else
+        UIColor *decodedUIColor = [coder decodeObjectOfClass:[UIColor class]
+                                                      forKey:@"CPTColor.uiColorCache"];
+        if ( decodedUIColor ) {
+            uiColorCache = decodedUIColor;
+        }
+        
 #endif
         CGColorSpaceRef colorSpace = [coder newCGColorSpaceDecodeForKey:@"CPTColor.colorSpace"];
 
@@ -642,6 +658,13 @@
         CPTColor *colorCopy = [[[self class] allocWithZone:zone] initWithNSColor:nsColorCopy];
         return colorCopy;
     }
+#else
+    UIColor *uiColorCopy = [self.uiColorCache copyWithZone:zone];
+    if ( uiColorCopy ) {
+        CPTColor *colorCopy = [[[self class] allocWithZone:zone] initWithUIColor:uiColorCopy];
+        return colorCopy;
+    }
+    
 #endif
     CGColorRef cgColorCopy = NULL;
 
