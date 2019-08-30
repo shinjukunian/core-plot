@@ -3316,6 +3316,7 @@
 				PRODUCT_NAME = CorePlot;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Source $(SRCROOT)/MacOnly";
+				USE_HEADERMAP = NO;
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Debug;
@@ -3338,6 +3339,7 @@
 				PRODUCT_NAME = CorePlot;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Source $(SRCROOT)/MacOnly";
+				USE_HEADERMAP = NO;
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Release;
