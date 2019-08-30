@@ -323,9 +323,9 @@ CPTLayerNotification const CPTLayerBoundsDidChangeNotification = @"CPTLayerBound
         return;
     }
     else {
-#if TARGET_OS_OSX
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
+#if TARGET_OS_OSX
         // Workaround since @available macro is not there
 
         if ( [NSView instancesRespondToSelector:@selector(effectiveAppearance)] ) {
@@ -337,10 +337,23 @@ CPTLayerNotification const CPTLayerBoundsDidChangeNotification = @"CPTLayerBound
         else {
             [super display];
         }
-#pragma clang diagnostic pop
 #else
-        [super display];
+        if ( [UITraitCollection instancesRespondToSelector:@selector(performAsCurrentTraitCollection:)] ) {
+            UITraitCollection *traitCollection = ((UIView *)self.graph.hostingView).traitCollection;
+            if ( traitCollection ) {
+                [traitCollection performAsCurrentTraitCollection: ^{
+                    [super display];
+                }];
+            }
+            else {
+                [super display];
+            }
+        }
+        else {
+            [super display];
+        }
 #endif
+#pragma clang diagnostic pop
     }
 }
 

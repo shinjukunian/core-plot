@@ -11,6 +11,8 @@
 
 #if TARGET_OS_OSX
 @property (nonatomic, readonly, nullable) NSColor *nsColorCache;
+#elif TARGET_OS_SIMULATOR || TARGET_OS_IOS
+@property (nonatomic, readonly, nullable) UIColor *uiColorCache;
 #endif
 @end
 
@@ -52,6 +54,31 @@
     }
 }
 
+#elif TARGET_OS_SIMULATOR || TARGET_OS_IOS
+
+/** @internal
+ *  @property nullable UIColor *uiColorCache
+ *  @brief The UIColor to wrap around.
+ **/
+@synthesize uiColorCache;
+
+/** @property nonnull UIColor *uiColor
+ *  @brief The UIColor to wrap around.
+ **/
+@dynamic uiColor;
+
+-(UIColor *)uiColor
+{
+    UIColor *theUIColor = self.uiColorCache;
+
+    if ( theUIColor ) {
+        return theUIColor;
+    }
+    else {
+        return [UIColor colorWithCGColor:self.cgColor];
+    }
+}
+
 #endif
 
 /** @property nonnull CGColorRef cgColor
@@ -65,6 +92,11 @@
     NSColor *theNSColor = self.nsColorCache;
     if ( theNSColor ) {
         return theNSColor.CGColor;
+    }
+#elif TARGET_OS_SIMULATOR || TARGET_OS_IOS
+    UIColor *theUIColor = self.uiColorCache;
+    if ( theUIColor ) {
+        return theUIColor.CGColor;
     }
 #endif
     return cgColor;
@@ -383,6 +415,20 @@
     return [[self alloc] initWithNSColor:newNSColor];
 }
 
+#elif TARGET_OS_SIMULATOR || TARGET_OS_IOS
+
+/** @brief Creates and returns a new CPTColor instance initialized with the provided UIColor.
+ *
+ *  UIColor can be a dynamic system color or catalog color. This adds support for dark mode in iOS13.
+ *
+ *  @param newUIColor The color to wrap.
+ *  @return A new CPTColor instance initialized with the provided UIColor.
+ **/
++(nonnull instancetype)colorWithUIColor:(nonnull UIColor *)newUIColor
+{
+    return [[self alloc] initWithUIColor:newUIColor];
+}
+
 #endif
 
 #pragma mark -
@@ -441,6 +487,23 @@
     return self;
 }
 
+#elif TARGET_OS_SIMULATOR || TARGET_OS_IOS
+
+/** @brief Initializes a newly allocated CPTColor object with the provided UIColor.
+ *
+ *  UIColor can be a dynamic system color or catalog color. This adds support for dark mode in iOS13.
+ *
+ *  @param newUIColor The color to wrap.
+ *  @return The initialized CPTColor object.
+ **/
+-(nonnull instancetype)initWithUIColor:(nonnull UIColor *)newUIColor
+{
+    if ((self = [super init])) {
+        uiColorCache = newUIColor;
+    }
+    return self;
+}
+
 #endif
 
 /// @cond
@@ -473,6 +536,12 @@
         NSColor *newNSColor = [theNSColor colorWithAlphaComponent:alpha];
         return [[self class] colorWithNSColor:newNSColor];
     }
+#elif TARGET_OS_SIMULATOR || TARGET_OS_IOS
+    UIColor *theUIColor = self.uiColorCache;
+    if ( theUIColor ) {
+        UIColor *newUIColor = [theUIColor colorWithAlphaComponent:alpha];
+        return [[self class] colorWithUIColor:newUIColor];
+    }
 #endif
     CGColorRef newCGColor = CGColorCreateCopyWithAlpha(self.cgColor, alpha);
     CPTColor *newColor    = [[self class] colorWithCGColor:newCGColor];
@@ -502,6 +571,8 @@
 {
 #if TARGET_OS_OSX
     [coder encodeConditionalObject:self.nsColorCache forKey:@"CPTColor.nsColorCache"];
+#elif TARGET_OS_SIMULATOR || TARGET_OS_IOS
+    [coder encodeConditionalObject:self.uiColorCache forKey:@"CPTColor.uiColorCache"];
 #endif
 
     CGColorRef theColor = self.cgColor;
@@ -533,6 +604,12 @@
                                                       forKey:@"CPTColor.nsColorCache"];
         if ( decodedNSColor ) {
             nsColorCache = decodedNSColor;
+        }
+#elif TARGET_OS_SIMULATOR || TARGET_OS_IOS
+        UIColor *decodedUIColor = [coder decodeObjectOfClass:[UIColor class]
+                                                      forKey:@"CPTColor.uiColorCache"];
+        if ( decodedUIColor ) {
+            uiColorCache = decodedUIColor;
         }
 #endif
         CGColorSpaceRef colorSpace = [coder newCGColorSpaceDecodeForKey:@"CPTColor.colorSpace"];
@@ -578,6 +655,12 @@
     NSColor *nsColorCopy = [self.nsColorCache copyWithZone:zone];
     if ( nsColorCopy ) {
         CPTColor *colorCopy = [[[self class] allocWithZone:zone] initWithNSColor:nsColorCopy];
+        return colorCopy;
+    }
+#elif TARGET_OS_SIMULATOR || TARGET_OS_IOS
+    UIColor *uiColorCopy = [self.uiColorCache copyWithZone:zone];
+    if ( uiColorCopy ) {
+        CPTColor *colorCopy = [[[self class] allocWithZone:zone] initWithUIColor:uiColorCopy];
         return colorCopy;
     }
 #endif
