@@ -397,7 +397,7 @@ CPTGraphPlotSpaceKey const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPl
 #else
     if ( @available(iOS 13, *)) {
         if ( [UITraitCollection instancesRespondToSelector:@selector(performAsCurrentTraitCollection:)] ) {
-            UITraitCollection *traitCollection = ((UIView *)self.graph.hostingView).traitCollection;
+            UITraitCollection *traitCollection = ((UIView *)self.hostingView).traitCollection;
             if ( traitCollection ) {
                 [traitCollection performAsCurrentTraitCollection: ^{
                     [super layoutAndRenderInContext:context];
