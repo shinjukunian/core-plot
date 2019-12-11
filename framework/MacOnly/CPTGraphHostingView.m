@@ -91,13 +91,6 @@ static void *CPTGraphHostingViewKVOContext = (void *)&CPTGraphHostingViewKVOCont
     return [[CPTLayer alloc] initWithFrame:NSRectToCGRect(self.bounds)];
 }
 
--(void)awakeFromNib
-{
-    [super awakeFromNib];
-
-    [self commonInit];
-}
-
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -419,6 +412,8 @@ static void *CPTGraphHostingViewKVOContext = (void *)&CPTGraphHostingViewKVOCont
 
 -(void)viewDidChangeBackingProperties
 {
+    [super viewDidChangeBackingProperties];
+
     NSWindow *myWindow = self.window;
 
     if ( myWindow ) {
