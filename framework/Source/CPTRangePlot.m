@@ -13,6 +13,7 @@
 #import "CPTUtilities.h"
 #import "CPTXYPlotSpace.h"
 #import "NSCoderExtensions.h"
+#import "NSNumberExtensions.h"
 #import "tgmath.h"
 
 /** @defgroup plotAnimationRangePlot Range Plot
@@ -34,6 +35,7 @@ CPTRangePlotBinding const CPTRangePlotBindingLowValues     = @"lowValues";     /
 CPTRangePlotBinding const CPTRangePlotBindingLeftValues    = @"leftValues";    ///< Left price values.
 CPTRangePlotBinding const CPTRangePlotBindingRightValues   = @"rightValues";   ///< Right price values.
 CPTRangePlotBinding const CPTRangePlotBindingBarLineStyles = @"barLineStyles"; ///< Bar line styles.
+CPTRangePlotBinding const CPTRangePlotBindingBarWidths     = @"barWidths";     ///< Bar widths.
 
 /// @cond
 struct CGPointError {
@@ -55,15 +57,17 @@ typedef struct CGPointError CGPointError;
 @property (nonatomic, readwrite, copy, nullable) CPTMutableNumericData *leftValues;
 @property (nonatomic, readwrite, copy, nullable) CPTMutableNumericData *rightValues;
 @property (nonatomic, readwrite, copy, nullable) CPTLineStyleArray *barLineStyles;
+@property (nonatomic, readwrite, copy, nullable) CPTLineStyleArray *barWidths;
 @property (nonatomic, readwrite, assign) NSUInteger pointingDeviceDownIndex;
 
--(void)calculatePointsToDraw:(nonnull BOOL *)pointDrawFlags numberOfPoints:(NSUInteger)dataCount forPlotSpace:(nonnull CPTXYPlotSpace *)xyPlotSpace includeVisiblePointsOnly:(BOOL)visibleOnly;
+-(void)calculatePointsToDraw:(nonnull BOOL *)pointDrawFlags numberOfPoints:(NSUInteger)dataCount forPlotSpace:(nonnull CPTXYPlotSpace *)xyPlotSpace;
 -(void)calculateViewPoints:(nonnull CGPointError *)viewPoints withDrawPointFlags:(nonnull BOOL *)drawPointFlags numberOfPoints:(NSUInteger)dataCount;
 -(void)alignViewPointsToUserSpace:(nonnull CGPointError *)viewPoints withContext:(nonnull CGContextRef)context drawPointFlags:(nonnull BOOL *)drawPointFlag numberOfPoints:(NSUInteger)dataCounts;
 -(NSInteger)extremeDrawnPointIndexForFlags:(nonnull BOOL *)pointDrawFlags numberOfPoints:(NSUInteger)dataCount extremeNumIsLowerBound:(BOOL)isLowerBound;
 
 -(void)drawRangeInContext:(nonnull CGContextRef)context lineStyle:(nonnull CPTLineStyle *)lineStyle viewPoint:(CGPointError *)viewPoint halfGapSize:(CGSize)halfGapSize halfBarWidth:(CGFloat)halfBarWidth alignPoints:(BOOL)alignPoints;
 -(CPTLineStyle *)barLineStyleForIndex:(NSUInteger)idx;
+-(nonnull NSNumber *)barWidthForIndex:(NSUInteger)idx;
 
 @end
 
@@ -88,6 +92,7 @@ typedef struct CGPointError CGPointError;
 @dynamic leftValues;
 @dynamic rightValues;
 @dynamic barLineStyles;
+@dynamic barWidths;
 
 /** @property CPTRangePlotFillDirection fillDirection
  *  @brief Fill the range in a horizontal or vertical direction.
@@ -156,6 +161,7 @@ typedef struct CGPointError CGPointError;
         [self exposeBinding:CPTRangePlotBindingLeftValues];
         [self exposeBinding:CPTRangePlotBindingRightValues];
         [self exposeBinding:CPTRangePlotBindingBarLineStyles];
+        [self exposeBinding:CPTRangePlotBindingBarWidths];
     }
 }
 
@@ -170,7 +176,12 @@ typedef struct CGPointError CGPointError;
  *
  *  This is the designated initializer. The initialized layer will have the following properties:
  *  - @ref barLineStyle = default line style
+ *  - @ref fillDirection = CPTRangePlotFillHorizontal
  *  - @ref areaFill = @nil
+ *  - @ref areaBorderLineStyle = @nil
+ *  - @ref barWidth = 0.0
+ *  - @ref gapHeight = 0.0
+ *  - @ref gapWidth = 0.0
  *  - @ref labelField = #CPTRangePlotFieldX
  *
  *  @param newFrame The frame rectangle.
@@ -183,6 +194,9 @@ typedef struct CGPointError CGPointError;
         fillDirection       = CPTRangePlotFillHorizontal;
         areaFill            = nil;
         areaBorderLineStyle = nil;
+        barWidth            = CPTFloat(0.0);
+        gapHeight           = CPTFloat(0.0);
+        gapWidth            = CPTFloat(0.0);
 
         pointingDeviceDownIndex = NSNotFound;
 
@@ -204,6 +218,9 @@ typedef struct CGPointError CGPointError;
         fillDirection       = theLayer->fillDirection;
         areaFill            = theLayer->areaFill;
         areaBorderLineStyle = theLayer->areaBorderLineStyle;
+        barWidth            = theLayer->barWidth;
+        gapHeight           = theLayer->gapHeight;
+        gapWidth            = theLayer->gapWidth;
 
         pointingDeviceDownIndex = NSNotFound;
     }
@@ -271,7 +288,7 @@ typedef struct CGPointError CGPointError;
 
 /// @cond
 
--(void)calculatePointsToDraw:(nonnull BOOL *)pointDrawFlags numberOfPoints:(NSUInteger)dataCount forPlotSpace:(nonnull CPTXYPlotSpace *)xyPlotSpace includeVisiblePointsOnly:(BOOL)visibleOnly
+-(void)calculatePointsToDraw:(nonnull BOOL *)pointDrawFlags numberOfPoints:(NSUInteger)dataCount forPlotSpace:(nonnull CPTXYPlotSpace *)xyPlotSpace
 {
     if ( dataCount == 0 ) {
         return;
@@ -545,6 +562,9 @@ typedef struct CGPointError CGPointError;
 
     // Bar line styles
     [self reloadBarLineStylesInIndexRange:indexRange];
+
+    // Bar widths
+    [self reloadBarWidthsInIndexRange:indexRange];
 }
 
 -(void)reloadPlotDataInIndexRange:(NSRange)indexRange
@@ -633,6 +653,49 @@ typedef struct CGPointError CGPointError;
     [self setNeedsDisplay];
 }
 
+/**
+ *  @brief Reload all bar widths from the data source immediately.
+ **/
+-(void)reloadBarWidths
+{
+    [self reloadBarWidthsInIndexRange:NSMakeRange(0, self.cachedDataCount)];
+}
+
+/** @brief Reload bar widths in the given index range from the data source immediately.
+ *  @param indexRange The index range to load.
+ **/
+-(void)reloadBarWidthsInIndexRange:(NSRange)indexRange
+{
+    id<CPTRangePlotDataSource> theDataSource = (id<CPTRangePlotDataSource>)self.dataSource;
+
+    if ( [theDataSource respondsToSelector:@selector(barWidthsForRangePlot:recordIndexRange:)] ) {
+        [self cacheArray:[theDataSource barWidthsForRangePlot:self recordIndexRange:indexRange]
+                  forKey:CPTRangePlotBindingBarWidths
+           atRecordIndex:indexRange.location];
+    }
+    else if ( [theDataSource respondsToSelector:@selector(barWidthForRangePlot:recordIndex:)] ) {
+        id nilObject                 = [CPTPlot nilData];
+        CPTMutableNumberArray *array = [[NSMutableArray alloc] initWithCapacity:indexRange.length];
+        NSUInteger maxIndex          = NSMaxRange(indexRange);
+
+        for ( NSUInteger idx = indexRange.location; idx < maxIndex; idx++ ) {
+            NSNumber *width = [theDataSource barWidthForRangePlot:self recordIndex:idx];
+            if ( width ) {
+                [array addObject:width];
+            }
+            else {
+                [array addObject:nilObject];
+            }
+        }
+
+        [self cacheArray:array
+                  forKey:CPTRangePlotBindingBarWidths
+           atRecordIndex:indexRange.location];
+    }
+
+    [self setNeedsDisplay];
+}
+
 #pragma mark -
 #pragma mark Drawing
 
@@ -665,7 +728,7 @@ typedef struct CGPointError CGPointError;
     BOOL *drawPointFlags     = calloc(dataCount, sizeof(BOOL));
 
     CPTXYPlotSpace *thePlotSpace = (CPTXYPlotSpace *)self.plotSpace;
-    [self calculatePointsToDraw:drawPointFlags numberOfPoints:dataCount forPlotSpace:thePlotSpace includeVisiblePointsOnly:NO];
+    [self calculatePointsToDraw:drawPointFlags numberOfPoints:dataCount forPlotSpace:thePlotSpace];
     [self calculateViewPoints:viewPoints withDrawPointFlags:drawPointFlags numberOfPoints:dataCount];
     if ( self.alignsPointsToPixels ) {
         [self alignViewPointsToUserSpace:viewPoints withContext:context drawPointFlags:drawPointFlags numberOfPoints:dataCount];
@@ -775,11 +838,12 @@ typedef struct CGPointError CGPointError;
             CGPathRelease(fillPath);
         }
 
-        CGSize halfGapSize   = CPTSizeMake(self.gapWidth * CPTFloat(0.5), self.gapHeight * CPTFloat(0.5));
-        CGFloat halfBarWidth = self.barWidth * CPTFloat(0.5);
-        BOOL alignPoints     = self.alignsPointsToPixels;
+        CGSize halfGapSize = CPTSizeMake(self.gapWidth * CPTFloat(0.5), self.gapHeight * CPTFloat(0.5));
+        BOOL alignPoints   = self.alignsPointsToPixels;
 
         for ( NSUInteger i = (NSUInteger)firstDrawnPointIndex; i <= (NSUInteger)lastDrawnPointIndex; i++ ) {
+            CGFloat halfBarWidth = [self barWidthForIndex:i].cgFloatValue * CPTFloat(0.5);
+
             [self drawRangeInContext:context
                            lineStyle:[self barLineStyleForIndex:i]
                            viewPoint:&viewPoints[i]
@@ -967,6 +1031,17 @@ typedef struct CGPointError CGPointError;
     return theBarLineStyle;
 }
 
+-(nonnull NSNumber *)barWidthForIndex:(NSUInteger)idx
+{
+    NSNumber *theBarWidth = [self cachedValueForKey:CPTRangePlotBindingBarWidths recordIndex:idx];
+
+    if ((theBarWidth == nil) || (theBarWidth == [CPTPlot nilData])) {
+        theBarWidth = @(self.barWidth);
+    }
+
+    return theBarWidth;
+}
+
 /// @endcond
 
 #pragma mark -
@@ -1102,7 +1177,7 @@ typedef struct CGPointError CGPointError;
     CGPointError *viewPoints = calloc(dataCount, sizeof(CGPointError));
     BOOL *drawPointFlags     = calloc(dataCount, sizeof(BOOL));
 
-    [self calculatePointsToDraw:drawPointFlags numberOfPoints:dataCount forPlotSpace:(id)self.plotSpace includeVisiblePointsOnly:YES];
+    [self calculatePointsToDraw:drawPointFlags numberOfPoints:dataCount forPlotSpace:(CPTXYPlotSpace *)self.plotSpace];
     [self calculateViewPoints:viewPoints withDrawPointFlags:drawPointFlags numberOfPoints:dataCount];
 
     NSInteger result = [self extremeDrawnPointIndexForFlags:drawPointFlags numberOfPoints:dataCount extremeNumIsLowerBound:YES];
