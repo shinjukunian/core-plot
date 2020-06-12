@@ -774,6 +774,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
     // Determine union of ranges
     CPTMutablePlotRange *unionXRange = nil;
     CPTMutablePlotRange *unionYRange = nil;
+
     for ( CPTPlot *plot in plots ) {
         CPTPlotRange *currentXRange = [plot plotRangeForCoordinate:CPTCoordinateX];
         CPTPlotRange *currentYRange = [plot plotRangeForCoordinate:CPTCoordinateY];
@@ -789,6 +790,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
 
     // Set range
     NSDecimal zero = CPTDecimalFromInteger(0);
+
     if ( unionXRange ) {
         if ( CPTDecimalEquals(unionXRange.lengthDecimal, zero)) {
             [unionXRange unionPlotRange:self.xRange];
@@ -812,6 +814,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
     // Determine union of ranges
     CPTMutablePlotRange *unionXRange = nil;
     CPTMutablePlotRange *unionYRange = nil;
+
     for ( CPTPlot *plot in plots ) {
         CPTPlotRange *currentXRange = [plot plotRangeEnclosingCoordinate:CPTCoordinateX];
         CPTPlotRange *currentYRange = [plot plotRangeEnclosingCoordinate:CPTCoordinateY];
@@ -827,6 +830,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
 
     // Set range
     NSDecimal zero = CPTDecimalFromInteger(0);
+
     if ( unionXRange ) {
         if ( CPTDecimalEquals(unionXRange.lengthDecimal, zero)) {
             [unionXRange unionPlotRange:self.xRange];
@@ -892,6 +896,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
     }
 
     NSDecimal factor = CPTDecimalDivide(CPTDecimalSubtract(plotCoord, range.locationDecimal), range.lengthDecimal);
+
     if ( NSDecimalIsNotANumber(&factor)) {
         factor = CPTDecimalFromInteger(0);
     }
@@ -921,6 +926,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
     NSDecimal length   = range.lengthDecimal;
 
     NSDecimal coordinate;
+
     NSDecimalDivide(&coordinate, &viewLength, &boundsLength, NSRoundPlain);
     NSDecimalMultiply(&coordinate, &coordinate, &length, NSRoundPlain);
     NSDecimalAdd(&coordinate, &coordinate, &location, NSRoundPlain);
@@ -935,6 +941,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
     }
 
     double coordinate = (double)viewLength / (double)boundsLength;
+
     coordinate *= range.lengthDouble;
     coordinate += range.locationDouble;
 
@@ -1430,6 +1437,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
     id<CPTPlotSpaceDelegate> theDelegate = self.delegate;
 
     BOOL shouldScale = YES;
+
     if ( [theDelegate respondsToSelector:@selector(plotSpace:shouldScaleBy:aboutPoint:)] ) {
         shouldScale = [theDelegate plotSpace:self shouldScaleBy:interactionScale aboutPoint:plotAreaPoint];
     }
@@ -1440,6 +1448,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
     // Determine point in plot coordinates
     NSDecimal const decimalScale = CPTDecimalFromCGFloat(interactionScale);
     NSDecimal plotInteractionPoint[2];
+
     [self plotPoint:plotInteractionPoint numberOfCoordinates:2 forPlotAreaViewPoint:plotAreaPoint];
 
     // Cache old ranges
@@ -1452,6 +1461,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
 
     // New locations
     NSDecimal newLocationX;
+
     if ( CPTDecimalGreaterThanOrEqualTo(oldRangeX.lengthDecimal, CPTDecimalFromInteger(0))) {
         NSDecimal oldFirstLengthX = CPTDecimalSubtract(plotInteractionPoint[CPTCoordinateX], oldRangeX.minLimitDecimal); // x - minX
         NSDecimal newFirstLengthX = CPTDecimalDivide(oldFirstLengthX, decimalScale);                                     // (x - minX) / scale
@@ -1464,6 +1474,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
     }
 
     NSDecimal newLocationY;
+
     if ( CPTDecimalGreaterThanOrEqualTo(oldRangeY.lengthDecimal, CPTDecimalFromInteger(0))) {
         NSDecimal oldFirstLengthY = CPTDecimalSubtract(plotInteractionPoint[CPTCoordinateY], oldRangeY.minLimitDecimal); // y - minY
         NSDecimal newFirstLengthY = CPTDecimalDivide(oldFirstLengthY, decimalScale);                                     // (y - minY) / scale
@@ -1480,6 +1491,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
     CPTPlotRange *newRangeY = [[CPTPlotRange alloc] initWithLocationDecimal:newLocationY lengthDecimal:newLengthY];
 
     BOOL oldMomentum = self.allowsMomentumX;
+
     self.allowsMomentumX = NO;
     self.xRange          = newRangeX;
     self.allowsMomentumX = oldMomentum;
@@ -1522,17 +1534,20 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
     self.isDragging = NO;
 
     BOOL handledByDelegate = [super pointingDeviceDownEvent:event atPoint:interactionPoint];
+
     if ( handledByDelegate ) {
         return YES;
     }
 
     CPTGraph *theGraph    = self.graph;
     CPTPlotArea *plotArea = theGraph.plotAreaFrame.plotArea;
+
     if ( !self.allowsUserInteraction || !plotArea ) {
         return NO;
     }
 
     CGPoint pointInPlotArea = [theGraph convertPoint:interactionPoint toLayer:plotArea];
+
     if ( [plotArea containsPoint:pointInPlotArea] ) {
         // Handle event
         self.lastDragPoint    = pointInPlotArea;
@@ -1581,6 +1596,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
 
     CPTGraph *theGraph    = self.graph;
     CPTPlotArea *plotArea = theGraph.plotAreaFrame.plotArea;
+
     if ( !self.allowsUserInteraction || !plotArea ) {
         return NO;
     }
@@ -1679,6 +1695,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
 
     CPTGraph *theGraph    = self.graph;
     CPTPlotArea *plotArea = theGraph.plotAreaFrame.plotArea;
+
     if ( !self.allowsUserInteraction || !plotArea ) {
         return NO;
     }
@@ -1804,6 +1821,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
 
     CPTGraph *theGraph    = self.graph;
     CPTPlotArea *plotArea = theGraph.plotAreaFrame.plotArea;
+
     if ( !self.allowsUserInteraction || !plotArea ) {
         return NO;
     }
@@ -1822,6 +1840,7 @@ CGFloat CPTFirstPositiveRoot(CGFloat a, CGFloat b, CGFloat c)
     }
 
     NSDecimal lastPoint[2], newPoint[2];
+
     [self plotPoint:lastPoint numberOfCoordinates:2 forPlotAreaViewPoint:fromPointInPlotArea];
     [self plotPoint:newPoint numberOfCoordinates:2 forPlotAreaViewPoint:pointToUse];
 

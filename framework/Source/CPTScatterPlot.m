@@ -730,6 +730,7 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
     [self calculateViewPoints:viewPoints withDrawPointFlags:drawPointFlags numberOfPoints:dataCount];
 
     NSInteger result = [self extremeDrawnPointIndexForFlags:drawPointFlags numberOfPoints:dataCount extremeNumIsLowerBound:YES];
+
     if ( result != NSNotFound ) {
         CGFloat minimumDistanceSquared = CPTNAN;
         for ( NSUInteger i = (NSUInteger)result; i < dataCount; ++i ) {
@@ -796,6 +797,7 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
         return;
     }
     NSUInteger dataCount = self.cachedDataCount;
+
     if ( dataCount == 0 ) {
         return;
     }
@@ -813,6 +815,7 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
     BOOL *drawPointFlags = calloc(dataCount, sizeof(BOOL));
 
     CPTXYPlotSpace *thePlotSpace = (CPTXYPlotSpace *)self.plotSpace;
+<<<<<<< HEAD
     
     /*
      
@@ -822,9 +825,14 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
     //  [self calculatePointsToDraw:drawPointFlags forPlotSpace:thePlotSpace includeVisiblePointsOnly:NO numberOfPoints:dataCount];
     [self calculatePointsToDraw:drawPointFlags forPlotSpace:thePlotSpace includeVisiblePointsOnly:YES numberOfPoints:dataCount];
 
+=======
+
+    [self calculatePointsToDraw:drawPointFlags forPlotSpace:thePlotSpace includeVisiblePointsOnly:NO numberOfPoints:dataCount];
+>>>>>>> fd119aab28b95c0e750e4df0c1cda41560c8b678
     [self calculateViewPoints:viewPoints withDrawPointFlags:drawPointFlags numberOfPoints:dataCount];
 
     BOOL pixelAlign = self.alignsPointsToPixels;
+
     if ( pixelAlign ) {
         [self alignViewPointsToUserSpace:viewPoints withContext:context drawPointFlags:drawPointFlags numberOfPoints:dataCount];
     }
@@ -1652,6 +1660,7 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
     [self reloadDataIfNeeded];
 
     NSUInteger dataCount = self.cachedDataCount;
+
     if ( dataCount == 0 ) {
         return CGPathCreateMutable();
     }
