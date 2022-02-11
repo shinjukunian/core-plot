@@ -1045,8 +1045,8 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
                             CGPathAddLineToPoint(dataLinePath, NULL, x, viewPoint.y);
                         }
                         CGPathAddLineToPoint(dataLinePath, NULL, viewPoint.x, viewPoint.y);
+                        break;
                     }
-                    break;
 
                     case CPTScatterPlotInterpolationCurved:
                         // Curved plot lines handled separately
@@ -1739,8 +1739,8 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
                                                            lowerLeft[CPTCoordinateX].decimalValue)];
                     range = [CPTPlotRange plotRangeWithLocation:lowerLeft[CPTCoordinateX]
                                                          length:length];
+                    break;
                 }
-                break;
 
                 case CPTScatterPlotFieldY:
                 {
@@ -1749,8 +1749,8 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
                                                            lowerLeft[CPTCoordinateY].decimalValue)];
                     range = [CPTPlotRange plotRangeWithLocation:lowerLeft[CPTCoordinateY]
                                                          length:length];
+                    break;
                 }
-                break;
 
                 default:
                     break;
