@@ -1,5 +1,6 @@
 language: objective-c
-osx_image: xcode12
+os: osx
+osx_image: xcode13.4
 
 jobs:
   include:

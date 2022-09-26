@@ -1,19 +1,11 @@
 name: "core-plot CI"
 
-on:
-  push:
-    branches:
-      - "*"
-  pull_request:
-    branches:
-      - "*"
+on: [push, pull_request]
 
 jobs:
   UnitTests:
     name: Unit Tests
     runs-on: macOS-latest
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -22,7 +14,7 @@ jobs:
         run: xcodebuild -project framework/CorePlot.xcodeproj -target "UnitTests Mac" -configuration Release ONLY_ACTIVE_ARCH=NO CODE_SIGNING_REQUIRED=NO
 
       - name: Run unit tests for iOS
-        run: xcodebuild -project framework/CorePlot.xcodeproj -target "UnitTests iOS" -sdk "iphonesimulator" -destination "name=iPhone 12 Pro" -configuration Release ONLY_ACTIVE_ARCH=NO CODE_SIGNING_REQUIRED=NO
+        run: xcodebuild -project framework/CorePlot.xcodeproj -target "UnitTests iOS" -sdk "iphonesimulator" -destination "name=iPhone 13 Pro" -configuration Release ONLY_ACTIVE_ARCH=NO CODE_SIGNING_REQUIRED=NO
 
       - name: Run unit tests for tvOS
         run: xcodebuild -project framework/CorePlot.xcodeproj -target "UnitTests tvOS" -sdk "appletvsimulator" -destination "name=Apple TV 4K" -configuration Release ONLY_ACTIVE_ARCH=NO CODE_SIGNING_REQUIRED=NO
@@ -30,13 +22,11 @@ jobs:
   SPM:
     name: Verify SPM build
     runs-on: macOS-latest
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
     strategy:
       matrix:
         destination:
           [
-            "platform=iOS Simulator,name=iPhone 12 Pro",
+            "platform=iOS Simulator,name=iPhone 13 Pro",
             "platform=macOS,variant=Mac Catalyst",
             "platform=macOS",
             "platform=tvOS Simulator,name=Apple TV 4k",
