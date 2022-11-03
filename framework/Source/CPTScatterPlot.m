@@ -456,7 +456,7 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
 {
     CPTPlotSymbol *symbol = [self cachedValueForKey:CPTScatterPlotBindingPlotSymbols recordIndex:idx];
 
-    if ((symbol == nil) || (symbol == [CPTPlot nilData])) {
+    if ( !symbol || (symbol == [CPTPlot nilData])) {
         symbol = self.plotSymbol;
     }
 
@@ -666,20 +666,17 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
 {
     // Align to device pixels if there is a data line.
     // Otherwise, align to view space, so fills are sharp at edges.
+    CPTAlignPointFunction alignmentFunction = CPTAlignIntegralPointToUserSpace;
+
     if ( self.dataLineStyle.lineWidth > CPTFloat(0.0)) {
-        dispatch_apply(dataCount, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(size_t i) {
-            if ( drawPointFlags[i] ) {
-                viewPoints[i] = CPTAlignPointToUserSpace(context, viewPoints[i]);
-            }
-        });
+        alignmentFunction = CPTAlignPointToUserSpace;
     }
-    else {
-        dispatch_apply(dataCount, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(size_t i) {
-            if ( drawPointFlags[i] ) {
-                viewPoints[i] = CPTAlignIntegralPointToUserSpace(context, viewPoints[i]);
-            }
-        });
-    }
+
+    dispatch_apply(dataCount, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(size_t i) {
+        if ( drawPointFlags[i] ) {
+            viewPoints[i] = alignmentFunction(context, viewPoints[i]);
+        }
+    });
 }
 
 -(NSInteger)extremeDrawnPointIndexForFlags:(nonnull BOOL *)pointDrawFlags numberOfPoints:(NSUInteger)dataCount extremeNumIsLowerBound:(BOOL)isLowerBound
@@ -793,7 +790,7 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
     CPTMutableNumericData *xValueData = [self cachedNumbersForField:CPTScatterPlotFieldX];
     CPTMutableNumericData *yValueData = [self cachedNumbersForField:CPTScatterPlotFieldY];
 
-    if ((xValueData == nil) || (yValueData == nil)) {
+    if ( !xValueData || !yValueData ) {
         return;
     }
     NSUInteger dataCount = self.cachedDataCount;

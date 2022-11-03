@@ -487,46 +487,30 @@ typedef struct CGPointError CGPointError;
 {
     // Align to device pixels if there is a data line.
     // Otherwise, align to view space, so fills are sharp at edges.
+    CPTAlignPointFunction alignmentFunction = CPTAlignIntegralPointToUserSpace;
+
     if ( self.barLineStyle.lineWidth > CPTFloat(0.0)) {
-        dispatch_apply(dataCount, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(size_t i) {
-            if ( drawPointFlags[i] ) {
-                CGFloat x       = viewPoints[i].x;
-                CGFloat y       = viewPoints[i].y;
-                CGPoint pos     = CPTAlignPointToUserSpace(context, CPTPointMake(viewPoints[i].x, viewPoints[i].y));
-                viewPoints[i].x = pos.x;
-                viewPoints[i].y = pos.y;
-
-                pos                 = CPTAlignPointToUserSpace(context, CPTPointMake(x, viewPoints[i].high));
-                viewPoints[i].high  = pos.y;
-                pos                 = CPTAlignPointToUserSpace(context, CPTPointMake(x, viewPoints[i].low));
-                viewPoints[i].low   = pos.y;
-                pos                 = CPTAlignPointToUserSpace(context, CPTPointMake(viewPoints[i].left, y));
-                viewPoints[i].left  = pos.x;
-                pos                 = CPTAlignPointToUserSpace(context, CPTPointMake(viewPoints[i].right, y));
-                viewPoints[i].right = pos.x;
-            }
-        });
+        alignmentFunction = CPTAlignPointToUserSpace;
     }
-    else {
-        dispatch_apply(dataCount, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(size_t i) {
-            if ( drawPointFlags[i] ) {
-                CGFloat x       = viewPoints[i].x;
-                CGFloat y       = viewPoints[i].y;
-                CGPoint pos     = CPTAlignIntegralPointToUserSpace(context, CPTPointMake(viewPoints[i].x, viewPoints[i].y));
-                viewPoints[i].x = pos.x;
-                viewPoints[i].y = pos.y;
 
-                pos                 = CPTAlignIntegralPointToUserSpace(context, CPTPointMake(x, viewPoints[i].high));
-                viewPoints[i].high  = pos.y;
-                pos                 = CPTAlignIntegralPointToUserSpace(context, CPTPointMake(x, viewPoints[i].low));
-                viewPoints[i].low   = pos.y;
-                pos                 = CPTAlignIntegralPointToUserSpace(context, CPTPointMake(viewPoints[i].left, y));
-                viewPoints[i].left  = pos.x;
-                pos                 = CPTAlignIntegralPointToUserSpace(context, CPTPointMake(viewPoints[i].right, y));
-                viewPoints[i].right = pos.x;
-            }
-        });
-    }
+    dispatch_apply(dataCount, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(size_t i) {
+        if ( drawPointFlags[i] ) {
+            CGFloat x       = viewPoints[i].x;
+            CGFloat y       = viewPoints[i].y;
+            CGPoint pos     = alignmentFunction(context, CPTPointMake(viewPoints[i].x, viewPoints[i].y));
+            viewPoints[i].x = pos.x;
+            viewPoints[i].y = pos.y;
+
+            pos                 = alignmentFunction(context, CPTPointMake(x, viewPoints[i].high));
+            viewPoints[i].high  = pos.y;
+            pos                 = alignmentFunction(context, CPTPointMake(x, viewPoints[i].low));
+            viewPoints[i].low   = pos.y;
+            pos                 = alignmentFunction(context, CPTPointMake(viewPoints[i].left, y));
+            viewPoints[i].left  = pos.x;
+            pos                 = alignmentFunction(context, CPTPointMake(viewPoints[i].right, y));
+            viewPoints[i].right = pos.x;
+        }
+    });
 }
 
 -(NSInteger)extremeDrawnPointIndexForFlags:(nonnull BOOL *)pointDrawFlags numberOfPoints:(NSUInteger)dataCount extremeNumIsLowerBound:(BOOL)isLowerBound
@@ -710,7 +694,7 @@ typedef struct CGPointError CGPointError;
     CPTMutableNumericData *xValueData = [self cachedNumbersForField:CPTRangePlotFieldX];
     CPTMutableNumericData *yValueData = [self cachedNumbersForField:CPTRangePlotFieldY];
 
-    if ((xValueData == nil) || (yValueData == nil)) {
+    if ( !xValueData || !yValueData ) {
         return;
     }
     NSUInteger dataCount = self.cachedDataCount;
@@ -1026,7 +1010,7 @@ typedef struct CGPointError CGPointError;
 {
     CPTLineStyle *theBarLineStyle = [self cachedValueForKey:CPTRangePlotBindingBarLineStyles recordIndex:idx];
 
-    if ((theBarLineStyle == nil) || (theBarLineStyle == [CPTPlot nilData])) {
+    if ( !theBarLineStyle || (theBarLineStyle == [CPTPlot nilData])) {
         theBarLineStyle = self.barLineStyle;
     }
 
@@ -1037,7 +1021,7 @@ typedef struct CGPointError CGPointError;
 {
     NSNumber *theBarWidth = [self cachedValueForKey:CPTRangePlotBindingBarWidths recordIndex:idx];
 
-    if ((theBarWidth == nil) || (theBarWidth == [CPTPlot nilData])) {
+    if ( !theBarWidth || (theBarWidth == [CPTPlot nilData])) {
         theBarWidth = @(self.barWidth);
     }
 
