@@ -84,16 +84,7 @@ void CPTPathApplierFunc(void *info, const CGPathElement *element);
     if ( colorSpace ) {
         CFDataRef iccProfile = NULL;
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        // CGColorSpaceCopyICCProfile() is deprecated as of macOS 10.13
-        if ( CGColorSpaceCopyICCData ) {
-            iccProfile = CGColorSpaceCopyICCData(colorSpace);
-        }
-        else {
-            iccProfile = CGColorSpaceCopyICCProfile(colorSpace);
-        }
-#pragma clang diagnostic pop
+        iccProfile = CGColorSpaceCopyICCData(colorSpace);
 
         [self encodeObject:(__bridge NSData *)iccProfile forKey:key];
         CFRelease(iccProfile);
@@ -110,6 +101,8 @@ void CPTPathApplierFunc(void *__nullable info, const CGPathElement *__nonnull el
 
     elementData[@"type"] = @(element->type);
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-fallthrough"
     switch ( element->type ) {
         case kCGPathElementAddCurveToPoint: // 3 points
             elementData[@"point3.x"] = @(element->points[2].x);
@@ -128,6 +121,7 @@ void CPTPathApplierFunc(void *__nullable info, const CGPathElement *__nonnull el
         case kCGPathElementCloseSubpath: // 0 points
             break;
     }
+#pragma clang diagnostic pop
 
     NSMutableArray<NSMutableDictionary<NSString *, NSNumber *> *> *pathData = (__bridge NSMutableArray<NSMutableDictionary<NSString *, NSNumber *> *> *) info;
 
@@ -163,6 +157,8 @@ void CPTPathApplierFunc(void *__nullable info, const CGPathElement *__nonnull el
 
         CGPoint point;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-fallthrough"
         switch ( type ) {
             case kCGPathElementAddCurveToPoint: // 3 points
                 point.x = [elementData[@"point3.x"] cgFloatValue];
@@ -187,6 +183,7 @@ void CPTPathApplierFunc(void *__nullable info, const CGPathElement *__nonnull el
             case kCGPathElementCloseSubpath: // 0 points
                 break;
         }
+#pragma clang diagnostic pop
     }
 }
 
@@ -359,16 +356,7 @@ void CPTPathApplierFunc(void *__nullable info, const CGPathElement *__nonnull el
     NSData *iccProfile = [self decodeObjectOfClass:[NSData class]
                                             forKey:key];
     if ( iccProfile ) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        // CGColorSpaceCreateWithICCProfile() is deprecated as of macOS 10.13
-        if ( CGColorSpaceCreateWithICCData ) {
-            colorSpace = CGColorSpaceCreateWithICCData((__bridge CFDataRef)iccProfile);
-        }
-        else {
-            colorSpace = CGColorSpaceCreateWithICCProfile((__bridge CFDataRef)iccProfile);
-        }
-#pragma clang diagnostic pop
+        colorSpace = CGColorSpaceCreateWithICCData((__bridge CFDataRef)iccProfile);
     }
     else {
         NSLog(@"Color space not available for key '%@'. Using generic RGB color space.", key);
@@ -402,6 +390,8 @@ void CPTPathApplierFunc(void *__nullable info, const CGPathElement *__nonnull el
         CGPoint point2 = CGPointZero;
         CGPoint point3 = CGPointZero;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-fallthrough"
         switch ( type ) {
             case kCGPathElementAddCurveToPoint: // 3 points
                 newKey = [[NSString alloc] initWithFormat:@"%@[%lu].point3", key, (unsigned long)i];
@@ -420,6 +410,7 @@ void CPTPathApplierFunc(void *__nullable info, const CGPathElement *__nonnull el
             case kCGPathElementCloseSubpath: // 0 points
                 break;
         }
+#pragma clang diagnostic pop
 
         switch ( type ) {
             case kCGPathElementMoveToPoint:
