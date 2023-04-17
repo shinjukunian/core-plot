@@ -122,4 +122,8 @@ IBC_ERRORS = YES
 IBC_NOTICES = YES
 IBC_WARNINGS = YES
 
+<<<<<<< HEAD
 WARNING_CFLAGS = -Weverything -Wno-undef -Wno-switch-enum -Wno-float-equal -Wno-custom-atomic-properties -Wno-pedantic -Wno-documentation -Wno-documentation-unknown-command  -Wno-partial-availability -Wno-objc-messaging-id -Wno-objc-load-method
+=======
+WARNING_CFLAGS = -Weverything -Wno-switch-enum -Wno-float-equal -Wno-pedantic -Wno-documentation -Wno-documentation-unknown-command -Wno-objc-messaging-id -Wno-declaration-after-statement
+>>>>>>> cd567705903b94df2a265200bc9a2b90af9532b3

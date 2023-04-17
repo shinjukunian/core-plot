@@ -1,4 +1,8 @@
+#ifdef CPT_IS_FRAMEWORK
+#import <CorePlot/CPTDefinitions.h>
+#else
 #import "CPTDefinitions.h"
+#endif
 
 /// @file
 
@@ -6,8 +10,10 @@
 
 @class CPTLineStyle;
 
+#ifdef __cplusplus
 #if __cplusplus
 extern "C" {
+#endif
 #endif
 
 /// @name Convert NSDecimal to Primitive Types
@@ -157,8 +163,10 @@ double CPTInverseLogModulus(double value);
 
 /// @}
 
+#ifdef __cplusplus
 #if __cplusplus
 }
+#endif
 #endif
 
 #pragma clang assume_nonnull end

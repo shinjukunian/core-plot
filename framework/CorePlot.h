@@ -1,6 +1,8 @@
+#define CPT_IS_FRAMEWORK
+
 #import <TargetConditionals.h>
 
-#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE || TARGET_OS_MACCATALYST
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -10,6 +12,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import <CorePlot/CPTDecimalNumberValueTransformer.h>
+
 #endif
 
 #import <CorePlot/CPTAnimation.h>
