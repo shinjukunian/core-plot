@@ -1,5 +1,11 @@
+#ifdef CPT_IS_FRAMEWORK
+#import <CorePlot/CPTDefinitions.h>
+#import <CorePlot/CPTPlatformSpecificDefines.h>
+#else
 #import "CPTDefinitions.h"
 #import "CPTPlatformSpecificDefines.h"
+#endif
+
 #import <TargetConditionals.h>
 
 #if TARGET_OS_OSX
@@ -9,8 +15,10 @@
 
 /// @file
 
+#ifdef __cplusplus
 #if __cplusplus
 extern "C" {
+#endif
 #endif
 
 /// @name Graphics Context Save Stack
@@ -33,8 +41,10 @@ CPTNativeImage *__nonnull CPTQuickLookImage(CGRect rect, __nonnull CPTQuickLookI
 
 /// @}
 
+#ifdef __cplusplus
 #if __cplusplus
 }
+#endif
 #endif
 
 #else
@@ -44,8 +54,10 @@ CPTNativeImage *__nonnull CPTQuickLookImage(CGRect rect, __nonnull CPTQuickLookI
 
 /// @file
 
+#ifdef __cplusplus
 #if __cplusplus
 extern "C" {
+#endif
 #endif
 
 /// @name Graphics Context Save Stack
@@ -61,8 +73,10 @@ CPTNativeImage *__nonnull CPTQuickLookImage(CGRect rect, __nonnull CPTQuickLookI
 
 /// @}
 
+#ifdef __cplusplus
 #if __cplusplus
 }
+#endif
 #endif
 
 #endif

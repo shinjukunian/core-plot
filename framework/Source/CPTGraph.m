@@ -1,5 +1,7 @@
 #import "CPTGraph.h"
 
+#import "_CPTPlotGroup.h"
+#import "_NSCoderExtensions.h"
 #import "CPTAxis.h"
 #import "CPTAxisSet.h"
 #import "CPTExceptions.h"
@@ -9,10 +11,8 @@
 #import "CPTMutableTextStyle.h"
 #import "CPTPlotArea.h"
 #import "CPTPlotAreaFrame.h"
-#import "CPTPlotGroup.h"
 #import "CPTTextLayer.h"
 #import "CPTTheme.h"
-#import "NSCoderExtensions.h"
 
 /** @defgroup graphAnimation Graphs
  *  @brief Graph properties that can be animated using Core Animation.
@@ -396,7 +396,7 @@ CPTGraphPlotSpaceKey const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPl
     }
 #else
 #ifdef __IPHONE_13_0
-    if ( @available(iOS 13, *)) {
+    if ( @available(iOS 13, tvOS 13, *)) {
         if ( [UITraitCollection instancesRespondToSelector:@selector(performAsCurrentTraitCollection:)] ) {
             UITraitCollection *traitCollection = ((UIView *)self.hostingView).traitCollection;
             if ( traitCollection ) {
