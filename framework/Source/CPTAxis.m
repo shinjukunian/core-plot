@@ -68,6 +68,7 @@ NSDecimal CPTNiceLength(NSDecimal length);
  *  @nil, the axis and grid lines will extend the full width of the plot area.
  *  @image html "axis ranges.png" "Axis Ranges"
  *  @see See @ref axisAnimation "Axes" for a list of animatable properties.
+ *  @see @ref "CPTAxis(AbstractMethods)"
  **/
 @implementation CPTAxis
 
@@ -808,7 +809,7 @@ NSDecimal CPTNiceLength(NSDecimal length);
                                               forKey:@"CPTAxis.axisLineCapMax"] copy];
         NSNumber *origin = [coder decodeObjectOfClass:[NSNumber class]
                                                forKey:@"CPTAxis.labelingOrigin"];
-        labelingOrigin      = origin ? origin : @0.0;
+        labelingOrigin      = origin != nil ? origin : @0.0;
         majorIntervalLength = [coder decodeObjectOfClass:[NSNumber class]
                                                   forKey:@"CPTAxis.majorIntervalLength"];
         minorTicksPerInterval       = (NSUInteger)[coder decodeIntegerForKey:@"CPTAxis.minorTicksPerInterval"];
@@ -931,7 +932,7 @@ NSDecimal CPTNiceLength(NSDecimal length);
  *  @brief Generate major and minor tick locations using the fixed interval labeling policy.
  *  @param newMajorLocations A new NSSet containing the major tick locations.
  *  @param newMinorLocations A new NSSet containing the minor tick locations.
- */
+ **/
 -(void)generateFixedIntervalMajorTickLocations:(CPTNumberSet *__autoreleasing *)newMajorLocations minorTickLocations:(CPTNumberSet *__autoreleasing *)newMinorLocations
 {
     CPTMutableNumberSet *majorLocations = [NSMutableSet set];
@@ -1011,7 +1012,7 @@ NSDecimal CPTNiceLength(NSDecimal length);
  *  @brief Generate major and minor tick locations using the automatic labeling policy.
  *  @param newMajorLocations A new NSSet containing the major tick locations.
  *  @param newMinorLocations A new NSSet containing the minor tick locations.
- */
+ **/
 -(void)autoGenerateMajorTickLocations:(CPTNumberSet *__autoreleasing *)newMajorLocations minorTickLocations:(CPTNumberSet *__autoreleasing *)newMinorLocations
 {
     // Create sets for locations
@@ -1306,7 +1307,7 @@ NSDecimal CPTNiceLength(NSDecimal length);
  *  @brief Generate major and minor tick locations using the equal divisions labeling policy.
  *  @param newMajorLocations A new NSSet containing the major tick locations.
  *  @param newMinorLocations A new NSSet containing the minor tick locations.
- */
+ **/
 -(void)generateEqualMajorTickLocations:(CPTNumberSet *__autoreleasing *)newMajorLocations minorTickLocations:(CPTNumberSet *__autoreleasing *)newMinorLocations
 {
     CPTMutableNumberSet *majorLocations = [NSMutableSet set];
@@ -1377,7 +1378,7 @@ NSDecimal CPTNiceLength(NSDecimal length);
  *  @internal
  *  @brief Determines a @quote{nice} number (a multiple of @num{2}, @num{5}, or @num{10}) near the given number.
  *  @param x The number to round.
- */
+ **/
 NSDecimal CPTNiceNum(NSDecimal x)
 {
     NSDecimal zero = CPTDecimalFromInteger(0);
@@ -1430,7 +1431,7 @@ NSDecimal CPTNiceNum(NSDecimal x)
  *  @internal
  *  @brief Determines a @quote{nice} range length (a multiple of @num{2}, @num{5}, or @num{10}) less than or equal to the given length.
  *  @param length The length to round.
- */
+ **/
 NSDecimal CPTNiceLength(NSDecimal length)
 {
     NSDecimal zero = CPTDecimalFromInteger(0);
@@ -1469,7 +1470,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
  *  @brief Removes any tick locations falling inside the label exclusion ranges from a set of tick locations.
  *  @param  allLocations A set of tick locations.
  *  @return              The filtered set of tick locations.
- */
+ **/
 -(nullable CPTNumberSet *)filteredTickLocations:(nullable CPTNumberSet *)allLocations
 {
     CPTPlotRangeArray *exclusionRanges = self.labelExclusionRanges;
@@ -1830,7 +1831,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
 /**
  *  @internal
  *  @brief Updates the position of all custom labels, hiding the ones that are outside the visible range.
- */
+ **/
 -(void)updateCustomTickLabels
 {
     CPTMutablePlotRange *range = [[self.plotSpace plotRangeForCoordinate:self.coordinate] mutableCopy];
@@ -2568,7 +2569,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
 {
     BOOL needsUpdate = YES;
 
-    if ( newLocation ) {
+    if ( newLocation != nil ) {
         NSNumber *location = newLocation;
         needsUpdate = ![titleLocation isEqualToNumber:location];
     }
@@ -2875,7 +2876,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
 {
     BOOL needsUpdate = YES;
 
-    if ( newLabelingOrigin ) {
+    if ( newLabelingOrigin != nil ) {
         needsUpdate = ![labelingOrigin isEqualToNumber:newLabelingOrigin];
     }
 
@@ -2890,7 +2891,7 @@ NSDecimal CPTNiceLength(NSDecimal length)
 {
     BOOL needsUpdate = YES;
 
-    if ( newIntervalLength ) {
+    if ( newIntervalLength != nil ) {
         NSNumber *interval = newIntervalLength;
         needsUpdate = ![majorIntervalLength isEqualToNumber:interval];
     }
@@ -3268,6 +3269,11 @@ NSDecimal CPTNiceLength(NSDecimal length)
 
 #pragma mark -
 
+/**
+ *  @brief CPTAxis abstract methods—must be overridden by subclasses
+ *
+ *  @see CPTAxis
+ **/
 @implementation CPTAxis(AbstractMethods)
 
 /** @brief Converts a position on the axis to drawing coordinates.

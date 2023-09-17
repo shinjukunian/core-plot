@@ -1,3 +1,5 @@
+/// @file
+
 #ifdef CPT_IS_FRAMEWORK
 #import <CorePlot/CPTAnnotationHostLayer.h>
 #import <CorePlot/CPTDefinitions.h>
@@ -7,8 +9,6 @@
 #import "CPTDefinitions.h"
 #import "CPTNumericDataType.h"
 #endif
-
-/// @file
 
 @class CPTLegend;
 @class CPTMutableNumericData;
@@ -386,9 +386,6 @@ typedef NSMutableArray<__kindof CPTPlot *> CPTMutablePlotArray;
 
 #pragma mark -
 
-/** @category CPTPlot(AbstractMethods)
- *  @brief CPTPlot abstract methods—must be overridden by subclasses
- **/
 @interface CPTPlot(AbstractMethods)
 
 /// @name Fields

@@ -102,7 +102,7 @@
 /** @brief Returns an object initialized from data in a given unarchiver.
  *  @param  coder An unarchiver object.
  *  @return       An object initialized from data in a given unarchiver.
- */
+ **/
 -(nullable instancetype)initWithCoder:(nonnull NSCoder *)coder
 {
     if ((self = [super init])) {
@@ -113,7 +113,7 @@
         alignment = (CPTAlignment)[coder decodeIntegerForKey:@"CPTAxisLabel.alignment"];
         NSNumber *location = [coder decodeObjectOfClass:[NSNumber class]
                                                  forKey:@"CPTAxisLabel.tickLocation"];
-        tickLocation = location ? location : @0.0;
+        tickLocation = location != nil ? location : @0.0;
     }
     return self;
 }
@@ -332,7 +332,7 @@
     else if ( [object isKindOfClass:[self class]] ) {
         NSNumber *location = ((CPTAxisLabel *)object).tickLocation;
 
-        if ( location ) {
+        if ( location != nil ) {
             return [self.tickLocation isEqualToNumber:location];
         }
         else {

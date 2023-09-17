@@ -1,3 +1,5 @@
+/// @file
+
 #ifdef CPT_IS_FRAMEWORK
 #import <CorePlot/CPTTextStyle.h>
 #else
@@ -14,5 +16,9 @@
 @property (readwrite, copy, nonatomic, nullable) CPTColor *color;
 @property (readwrite, assign, nonatomic) CPTTextAlignment textAlignment;
 @property (readwrite, assign, nonatomic) NSLineBreakMode lineBreakMode;
+
+@end
+
+@interface CPTMutableTextStyle(CPTPlatformSpecificMutableTextStyleExtensions)
 
 @end

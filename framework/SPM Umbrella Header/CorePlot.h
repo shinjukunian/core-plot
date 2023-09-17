@@ -9,8 +9,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "CPTDecimalNumberValueTransformer.h"
-
 #endif
 
 #import "CPTAnimation.h"
@@ -28,6 +26,7 @@
 #import "CPTColor.h"
 #import "CPTColorSpace.h"
 #import "CPTConstraints.h"
+#import "CPTDecimalNumberValueTransformer.h"
 #import "CPTDefinitions.h"
 #import "CPTExceptions.h"
 #import "CPTFill.h"

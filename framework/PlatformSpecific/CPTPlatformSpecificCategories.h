@@ -1,3 +1,5 @@
+/// @file
+
 #import <TargetConditionals.h>
 
 #ifdef CPT_IS_FRAMEWORK
@@ -17,9 +19,6 @@
 
 #pragma mark CPTLayer
 
-/** @category CPTLayer(CPTPlatformSpecificLayerExtensions)
- *  @brief Platform-specific extensions to CPTLayer.
- **/
 @interface CPTLayer(CPTPlatformSpecificLayerExtensions)
 
 /// @name Images
@@ -31,9 +30,6 @@
 
 #pragma mark - NSAttributedString
 
-/** @category NSAttributedString(CPTPlatformSpecificAttributedStringExtensions)
- *  @brief NSAttributedString extensions for drawing styled text.
- **/
 @interface NSAttributedString(CPTPlatformSpecificAttributedStringExtensions)
 
 /// @name Drawing
@@ -54,9 +50,6 @@
 
 #pragma mark - CPTLayer
 
-/** @category CPTLayer(CPTPlatformSpecificLayerExtensions)
- *  @brief Platform-specific extensions to CPTLayer.
- **/
 @interface CPTLayer(CPTPlatformSpecificLayerExtensions)
 
 /// @name Images
@@ -68,9 +61,6 @@
 
 #pragma mark - NSNumber
 
-/** @category NSNumber(CPTPlatformSpecificNumberExtensions)
- *  @brief Platform-specific extensions to NSNumber.
- **/
 @interface NSNumber(CPTPlatformSpecificNumberExtensions)
 
 -(BOOL)isLessThan:(nonnull NSNumber *)other;
@@ -82,9 +72,6 @@
 
 #pragma mark - NSAttributedString
 
-/** @category NSAttributedString(CPTPlatformSpecificAttributedStringExtensions)
- *  @brief NSAttributedString extensions for drawing styled text.
- **/
 @interface NSAttributedString(CPTPlatformSpecificAttributedStringExtensions)
 
 /// @name Drawing

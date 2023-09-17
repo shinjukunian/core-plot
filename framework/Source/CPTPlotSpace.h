@@ -1,3 +1,5 @@
+/// @file
+
 #ifdef CPT_IS_FRAMEWORK
 #import <CorePlot/CPTDefinitions.h>
 #import <CorePlot/CPTPlot.h>
@@ -214,9 +216,6 @@ typedef NSMutableArray<__kindof CPTPlotSpace *> CPTMutablePlotSpaceArray;
 
 #pragma mark -
 
-/** @category CPTPlotSpace(AbstractMethods)
- *  @brief CPTPlotSpace abstract methods—must be overridden by subclasses
- **/
 @interface CPTPlotSpace(AbstractMethods)
 
 /// @name Coordinate Space Conversions

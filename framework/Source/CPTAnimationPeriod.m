@@ -37,6 +37,8 @@
  *  - @ref NSNumber
  *  - @ref CPTPlotRange (NSValue wrapper not used)
  *  @note The starting and ending values must be the same type.
+ *
+ *  @see @ref "CPTAnimationPeriod(AbstractMethods)"
  **/
 @implementation CPTAnimationPeriod
 
@@ -192,7 +194,7 @@
  **/
 +(nonnull instancetype)periodWithStartDecimal:(NSDecimal)aStartDecimal endDecimal:(NSDecimal)anEndDecimal duration:(CGFloat)aDuration withDelay:(CGFloat)aDelay
 {
-    NSDecimalNumber *start = NSDecimalIsNotANumber(&aStartDecimal) ? nil : [NSDecimalNumber decimalNumberWithDecimal:aStartDecimal];
+    NSDecimalNumber *start = NSDecimalIsNotANumber(&aStartDecimal) ? nil : [NSDecimalNumber decimalNumberWithDecimal : aStartDecimal];
 
     return [_CPTAnimationNSDecimalPeriod periodWithStartValue:start
                                                      endValue:[NSDecimalNumber decimalNumberWithDecimal:anEndDecimal]
@@ -383,7 +385,7 @@
  **/
 -(nonnull instancetype)initWithStartDecimal:(NSDecimal)aStartDecimal endDecimal:(NSDecimal)anEndDecimal duration:(CGFloat)aDuration withDelay:(CGFloat)aDelay
 {
-    NSDecimalNumber *start = NSDecimalIsNotANumber(&aStartDecimal) ? nil : [NSDecimalNumber decimalNumberWithDecimal:aStartDecimal];
+    NSDecimalNumber *start = NSDecimalIsNotANumber(&aStartDecimal) ? nil : [NSDecimalNumber decimalNumberWithDecimal : aStartDecimal];
 
     self = [[_CPTAnimationNSDecimalPeriod alloc] initWithStartValue:start
                                                            endValue:[NSDecimalNumber decimalNumberWithDecimal:anEndDecimal]
@@ -451,7 +453,28 @@
 /// @endcond
 
 #pragma mark -
+#pragma mark Description
+
+/// @cond
+
+-(nullable NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@ from: %@; to: %@; duration: %g, delay: %g>", super.description, self.startValue, self.endValue, (double)self.duration, (double)self.delay];
+}
+
+/// @endcond
+
+@end
+
+#pragma mark -
 #pragma mark Abstract Methods
+
+/**
+ *  @brief CPTAnimationPeriod abstract methods—must be overridden by subclasses
+ *
+ *  @see CPTAnimationPeriod
+ **/
+@implementation CPTAnimationPeriod(AbstractMethods)
 
 /**
  *  @brief Initialize the start value from the property getter.
@@ -492,22 +515,15 @@
     return NO;
 }
 
-#pragma mark -
-#pragma mark Description
-
-/// @cond
-
--(nullable NSString *)description
-{
-    return [NSString stringWithFormat:@"<%@ from: %@; to: %@; duration: %g, delay: %g>", super.description, self.startValue, self.endValue, (double)self.duration, (double)self.delay];
-}
-
-/// @endcond
-
 @end
 
 #pragma mark -
 
+/**
+ *  @brief CPTAnimationPeriod convenience methods added to CPTAnimation.
+ *
+ *  @see CPTAnimation
+ **/
 @implementation CPTAnimation(CPTAnimationPeriodAdditions)
 
 // CGFloat

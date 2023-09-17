@@ -8,6 +8,8 @@
  *  Annotations can be used to add text or images that are anchored to a feature
  *  of a graph. For example, the graph title is an annotation anchored to the graph.
  *  The annotation content layer can be any CPTLayer.
+ *
+ *  @see @ref "CPTAnnotation(AbstractMethods)"
  **/
 @implementation CPTAnnotation
 
@@ -184,6 +186,11 @@
 #pragma mark -
 #pragma mark Layout
 
+/**
+ *  @brief CPTAnnotation abstract methods—must be overridden by subclasses.
+ *
+ *  @see CPTAnnotation
+ **/
 @implementation CPTAnnotation(AbstractMethods)
 
 /** @brief Positions the content layer relative to its reference anchor.

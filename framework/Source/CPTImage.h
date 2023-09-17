@@ -1,3 +1,5 @@
+/// @file
+
 #ifdef CPT_IS_FRAMEWORK
 #import <CorePlot/CPTDefinitions.h>
 #import <CorePlot/CPTPlatformSpecificDefines.h>
@@ -44,9 +46,6 @@
 
 #pragma mark -
 
-/** @category CPTImage(CPTPlatformSpecificImageExtensions)
- *  @brief Platform-specific extensions to CPTImage.
- **/
 @interface CPTImage(CPTPlatformSpecificImageExtensions)
 
 /// @name Initialization

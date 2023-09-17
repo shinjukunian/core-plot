@@ -166,8 +166,8 @@
  **/
 -(nonnull instancetype)initWithLocation:(nonnull NSNumber *)loc length:(nonnull NSNumber *)len
 {
-    NSParameterAssert(loc);
-    NSParameterAssert(len);
+    NSParameterAssert(loc != nil);
+    NSParameterAssert(len != nil);
 
     if ((self = [super init])) {
         locationDecimal = loc.decimalValue;
@@ -470,7 +470,7 @@
 /** @brief Returns an object initialized from data in a given unarchiver.
  *  @param  decoder An unarchiver object.
  *  @return         An object initialized from data in a given unarchiver.
- */
+ **/
 -(nullable instancetype)initWithCoder:(nonnull NSCoder *)decoder
 {
     if ((self = [super init])) {

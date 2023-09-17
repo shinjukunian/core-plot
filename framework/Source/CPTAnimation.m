@@ -47,6 +47,8 @@ typedef NSMutableArray<CPTAnimationOperation *> CPTMutableAnimationArray;
  *
  *  CPTAnimation provides animation support for all of these things. It can animate any property (of the supported data types)
  *  on objects of any class.
+ *
+ *  @see @ref "CPTAnimation(CPTAnimationPeriodAdditions)"
  **/
 @implementation CPTAnimation
 
@@ -337,7 +339,7 @@ typedef NSMutableArray<CPTAnimationOperation *> CPTMutableAnimationArray;
                         CPTAnimationOperationKey: animationOperation,
                         CPTAnimationValueKey: [period tweenedValueForProgress:progress],
                         CPTAnimationValueClassKey: valueClass ? valueClass : [NSNull class],
-                        CPTAnimationStartedKey : @(started),
+                        CPTAnimationStartedKey: @(started),
                         CPTAnimationFinishedKey: @(currentTime >= endTime)
                     };
 

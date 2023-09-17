@@ -56,11 +56,6 @@
 #pragma mark -
 #pragma mark Positioning
 
-/** @brief Compute the position given a range of values.
- *  @param  lowerBound The lower bound; must be less than or equal to the upperBound.
- *  @param  upperBound The upper bound; must be greater than or equal to the lowerBound.
- *  @return            The calculated position.
- **/
 -(CGFloat)positionForLowerBound:(CGFloat)lowerBound upperBound:(CGFloat)upperBound
 {
     NSAssert(lowerBound <= upperBound, @"lowerBound must be less than or equal to upperBound");
@@ -106,7 +101,7 @@
 /** @brief Returns an object initialized from data in a given unarchiver.
  *  @param  coder An unarchiver object.
  *  @return       An object initialized from data in a given unarchiver.
- */
+ **/
 -(nullable instancetype)initWithCoder:(nonnull NSCoder *)coder
 {
     if ((self = [super init])) {

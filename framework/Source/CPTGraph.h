@@ -1,4 +1,6 @@
 // Abstract class
+/// @file
+
 #ifdef CPT_IS_FRAMEWORK
 #import <CorePlot/CPTBorderedLayer.h>
 #import <CorePlot/CPTDefinitions.h>
@@ -10,8 +12,6 @@
 #import "CPTPlot.h"
 #import "CPTPlotSpace.h"
 #endif
-
-/// @file
 
 @class CPTAxisSet;
 @class CPTGraphHostingView;
@@ -153,9 +153,6 @@ typedef NS_ENUM (NSInteger, CPTGraphLayerType) {
 
 #pragma mark -
 
-/** @category CPTGraph(AbstractFactoryMethods)
- *  @brief CPTGraph abstract methods—must be overridden by subclasses
- **/
 @interface CPTGraph(AbstractFactoryMethods)
 
 /// @name Factory Methods

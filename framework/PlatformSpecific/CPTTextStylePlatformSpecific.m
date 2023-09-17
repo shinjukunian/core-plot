@@ -9,6 +9,11 @@
 #pragma mark macOS
 #pragma mark -
 
+/**
+ *  @brief Platform-specific extensions to CPTTextStyle.
+ *
+ *  @see CPTTextStyle
+ **/
 @implementation CPTTextStyle(CPTPlatformSpecificTextStyleExtensions)
 
 /** @property nonnull CPTDictionary *attributes
@@ -32,7 +37,7 @@
  *  - #NSForegroundColorAttributeName: Sets the @link CPTTextStyle::color color @endlink.
  *  - #NSParagraphStyleAttributeName: Sets the @link CPTTextStyle::textAlignment textAlignment @endlink and @link CPTTextStyle::lineBreakMode lineBreakMode @endlink.
  *
- *  Properties associated with missing keys will be inialized to their default values.
+ *  Properties associated with missing keys will be initialized to their default values.
  *
  *  @param  attributes A dictionary of standard text attributes.
  *  @return            A new CPTTextStyle instance.
@@ -133,6 +138,11 @@
 
 #pragma mark -
 
+/**
+ *  @brief Platform-specific extensions to CPTMutableTextStyle
+ *
+ *  @see CPTMutableTextStyle
+ **/
 @implementation CPTMutableTextStyle(CPTPlatformSpecificMutableTextStyleExtensions)
 
 /** @brief Creates and returns a new CPTMutableTextStyle instance initialized from a dictionary of text attributes.
@@ -143,7 +153,7 @@
  *  - #NSForegroundColorAttributeName: Sets the @link CPTMutableTextStyle::color color @endlink.
  *  - #NSParagraphStyleAttributeName: Sets the @link CPTMutableTextStyle::textAlignment textAlignment @endlink and @link CPTMutableTextStyle::lineBreakMode lineBreakMode @endlink.
  *
- *  Properties associated with missing keys will be inialized to their default values.
+ *  Properties associated with missing keys will be initialized to their default values.
  *
  *  @param  attributes A dictionary of standard text attributes.
  *  @return            A new CPTMutableTextStyle instance.
@@ -200,6 +210,11 @@
 
 #pragma mark -
 
+/**
+ *  @brief NSString extensions for drawing styled text.
+ *
+ *  @see NSString
+ **/
 @implementation NSString(CPTTextStyleExtensions)
 
 #pragma mark -
@@ -289,6 +304,11 @@
 #import "CPTColor.h"
 #import <tgmath.h>
 
+/**
+ *  @brief Platform-specific extensions to CPTTextStyle.
+ *
+ *  @see CPTTextStyle
+ **/
 @implementation CPTTextStyle(CPTPlatformSpecificTextStyleExtensions)
 
 /** @property nonnull CPTDictionary *attributes
@@ -312,7 +332,7 @@
  *  - #NSForegroundColorAttributeName: Sets the @link CPTTextStyle::color color @endlink.
  *  - #NSParagraphStyleAttributeName: Sets the @link CPTTextStyle::textAlignment textAlignment @endlink and @link CPTTextStyle::lineBreakMode lineBreakMode @endlink.
  *
- *  Properties associated with missing keys will be inialized to their default values.
+ *  Properties associated with missing keys will be initialized to their default values.
  *
  *  @param  attributes A dictionary of standard text attributes.
  *  @return            A new CPTTextStyle instance.
@@ -396,6 +416,11 @@
 
 #pragma mark -
 
+/**
+ *  @brief Platform-specific extensions to CPTMutableTextStyle
+ *
+ *  @see CPTMutableTextStyle
+ **/
 @implementation CPTMutableTextStyle(CPTPlatformSpecificMutableTextStyleExtensions)
 
 /** @brief Creates and returns a new CPTMutableTextStyle instance initialized from a dictionary of text attributes.
@@ -406,7 +431,7 @@
  *  - #NSForegroundColorAttributeName: Sets the @link CPTMutableTextStyle::color color @endlink.
  *  - #NSParagraphStyleAttributeName: Sets the @link CPTMutableTextStyle::textAlignment textAlignment @endlink and @link CPTMutableTextStyle::lineBreakMode lineBreakMode @endlink.
  *
- *  Properties associated with missing keys will be inialized to their default values.
+ *  Properties associated with missing keys will be initialized to their default values.
  *
  *  @param  attributes A dictionary of standard text attributes.
  *  @return            A new CPTMutableTextStyle instance.
@@ -445,6 +470,12 @@
 @end
 
 #pragma mark -
+
+/**
+ *  @brief NSString extensions for drawing styled text.
+ *
+ *  @see NSString
+ **/
 
 @implementation NSString(CPTTextStyleExtensions)
 
@@ -498,7 +529,7 @@
             attributes:style.attributes
                context:nil];
 #else
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
     // -drawWithRect:options:attributes:context: method is available in iOS 7.0 and later
     if ( [self respondsToSelector:@selector(drawWithRect:options:attributes:context:)] ) {
         [self drawWithRect:rect

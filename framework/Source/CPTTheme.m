@@ -39,6 +39,8 @@ NSArray * ClassGetSubclasses(Class parentClass);
  *  Using a theme to format the graph does not prevent any of the style properties
  *  from being changed later. Therefore, it is possible to apply initial formatting to
  *  a graph using a theme and then customize the styles to suit the application later.
+ *
+ *  @see @ref "CPTTheme(AbstractMethods)"
  **/
 @implementation CPTTheme
 
@@ -282,6 +284,11 @@ NSArray<Class> *ClassGetSubclasses(Class parentClass)
 
 #pragma mark -
 
+/**
+ *  @brief CPTTheme abstract methods—must be overridden by subclasses
+ *
+ *  @see CPTTheme
+ **/
 @implementation CPTTheme(AbstractMethods)
 
 /** @brief Creates a new graph styled with the theme.

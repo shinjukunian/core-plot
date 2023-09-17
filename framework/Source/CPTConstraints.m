@@ -8,6 +8,8 @@
 /** @brief Implements a one-dimensional constrained position within a given numeric range.
  *
  *  Supports fixed distance from either end of the range and a proportional fraction of the range.
+ *
+ *  @see @ref "CPTConstraints(AbstractMethods)"
  **/
 @implementation CPTConstraints
 
@@ -146,6 +148,11 @@
 
 #pragma mark -
 
+/**
+ *  @brief CPTConstraints abstract methods—must be overridden by subclasses
+ *
+ *  @see CPTConstraints
+ **/
 @implementation CPTConstraints(AbstractMethods)
 
 #pragma mark -

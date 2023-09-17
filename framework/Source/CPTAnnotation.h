@@ -1,10 +1,10 @@
+/// @file
+
 #ifdef CPT_IS_FRAMEWORK
 #import <CorePlot/CPTDefinitions.h>
 #else
 #import "CPTDefinitions.h"
 #endif
-
-/// @file
 
 @class CPTAnnotation;
 @class CPTAnnotationHostLayer;
@@ -38,9 +38,6 @@ typedef NSMutableArray<__kindof CPTAnnotation *> CPTMutableAnnotationArray;
 
 #pragma mark -
 
-/** @category CPTAnnotation(AbstractMethods)
- *  @brief CPTAnnotation abstract methods—must be overridden by subclasses.
- **/
 @interface CPTAnnotation(AbstractMethods)
 
 /// @name Layout

@@ -63,6 +63,7 @@ CPTGraphPlotSpaceKey const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPl
  *  a new graph; more may be added as needed.
  *
  *  @see See @ref graphAnimation "Graphs" for a list of animatable properties.
+ *  @see @ref "CPTGraph(AbstractFactoryMethods)"
  **/
 @implementation CPTGraph
 
@@ -1376,6 +1377,11 @@ CPTGraphPlotSpaceKey const CPTGraphPlotSpaceNotificationKey       = @"CPTGraphPl
 
 #pragma mark -
 
+/**
+ *  @brief CPTGraph abstract methods—must be overridden by subclasses
+ *
+ *  @see CPTGraph
+ **/
 @implementation CPTGraph(AbstractFactoryMethods)
 
 /** @brief Creates a new plot space for the graph.

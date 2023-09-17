@@ -98,6 +98,7 @@ CPTPlotBinding const CPTPlotBindingDataLabels = @"dataLabels"; ///< Plot data la
  *  @if MacOnly
  *  @see See @ref plotBindings "Plot Bindings" for a list of binding identifiers supported by each plot type.
  *  @endif
+ *  @see @ref "CPTPlot(AbstractMethods)"
  **/
 @implementation CPTPlot
 
@@ -2248,6 +2249,11 @@ CPTPlotBinding const CPTPlotBindingDataLabels = @"dataLabels"; ///< Plot data la
 
 #pragma mark -
 
+/**
+ *  @brief CPTPlot abstract methods—must be overridden by subclasses
+ *
+ *  @see CPTPlot
+ **/
 @implementation CPTPlot(AbstractMethods)
 
 #pragma mark -
@@ -2281,7 +2287,7 @@ CPTPlotBinding const CPTPlotBindingDataLabels = @"dataLabels"; ///< Plot data la
 /** @brief The coordinate value that corresponds to a particular field identifier.
  *  @param  field The field identifier for which the corresponding coordinate is desired.
  *  @return       The coordinate that corresponds to a particular field identifier or #CPTCoordinateNone if there is no matching coordinate.
- */
+ **/
 -(CPTCoordinate)coordinateForFieldIdentifier:(NSUInteger __unused)field
 {
     return CPTCoordinateNone;
@@ -2306,7 +2312,7 @@ CPTPlotBinding const CPTPlotBindingDataLabels = @"dataLabels"; ///< Plot data la
  *  @brief Determines the index of the data element that is under the given point.
  *  @param  point The coordinates of the interaction.
  *  @return       The index of the data point that is under the given point or @ref NSNotFound if none was found.
- */
+ **/
 -(NSUInteger)dataIndexFromInteractionPoint:(CGPoint __unused)point
 {
     return NSNotFound;

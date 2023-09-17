@@ -1,3 +1,5 @@
+/// @file
+
 #ifdef CPT_IS_FRAMEWORK
 #import <CorePlot/CPTDefinitions.h>
 #else
@@ -41,9 +43,6 @@ extern CPTThemeName __nonnull const kCPTStocksTheme;       ///< A graph theme wi
 
 @end
 
-/** @category CPTTheme(AbstractMethods)
- *  @brief CPTTheme abstract methods—must be overridden by subclasses
- **/
 @interface CPTTheme(AbstractMethods)
 
 /// @name Theme Usage

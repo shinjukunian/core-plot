@@ -1,3 +1,5 @@
+/// @file
+
 #ifdef CPT_IS_FRAMEWORK
 #import <CorePlot/CPTAnimation.h>
 #else
@@ -45,9 +47,6 @@
 
 #pragma mark -
 
-/** @category CPTAnimationPeriod(AbstractMethods)
- *  @brief CPTAnimationPeriod abstract methods—must be overridden by subclasses
- **/
 @interface CPTAnimationPeriod(AbstractMethods)
 
 /// @name Initialization

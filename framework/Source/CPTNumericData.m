@@ -43,6 +43,8 @@
  *
  *  All integer and floating point types can be represented using big endian or little endian
  *  byte order. Complex and decimal types support only the the host system&rsquo;s native byte order.
+ *
+ *  @see @ref "CPTNumericData(TypeConversion)"
  **/
 @implementation CPTNumericData
 
@@ -773,7 +775,7 @@
 
     for ( NSUInteger i = 0; i < sampleCount; i++ ) {
         NSNumber *sampleValue = [self sampleValue:i];
-        if ( sampleValue ) {
+        if ( sampleValue != nil ) {
             [samples addObject:sampleValue];
         }
     }
@@ -1175,7 +1177,7 @@
 /** @brief Returns an object initialized from data in a given unarchiver.
  *  @param  decoder An unarchiver object.
  *  @return         An object initialized from data in a given unarchiver.
- */
+ **/
 -(nullable instancetype)initWithCoder:(nonnull NSCoder *)decoder
 {
     if ((self = [super init])) {

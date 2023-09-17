@@ -1,3 +1,5 @@
+/// @file
+
 #ifdef CPT_IS_FRAMEWORK
 #import <CorePlot/CPTAxisLabel.h>
 #import <CorePlot/CPTDefinitions.h>
@@ -15,8 +17,6 @@
 #import "CPTPlotRange.h"
 #import "CPTTextStyle.h"
 #endif
-
-/// @file
 
 @class CPTAxis;
 @class CPTAxisSet;
@@ -329,9 +329,6 @@ typedef NSMutableArray<__kindof CPTAxis *> CPTMutableAxisArray;
 
 #pragma mark -
 
-/** @category CPTAxis(AbstractMethods)
- *  @brief CPTAxis abstract methods—must be overridden by subclasses
- **/
 @interface CPTAxis(AbstractMethods)
 
 /// @name Coordinate Space Conversions

@@ -2284,7 +2284,7 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
 {
     BOOL needsUpdate = YES;
 
-    if ( newAreaBaseValue ) {
+    if ( newAreaBaseValue != nil ) {
         NSNumber *baseValue = newAreaBaseValue;
         needsUpdate = ![areaBaseValue isEqualToNumber:baseValue];
     }
@@ -2300,7 +2300,7 @@ CPTScatterPlotBinding const CPTScatterPlotBindingPlotSymbols = @"plotSymbols"; /
 {
     BOOL needsUpdate = YES;
 
-    if ( newAreaBaseValue ) {
+    if ( newAreaBaseValue != nil ) {
         NSNumber *baseValue = newAreaBaseValue;
         needsUpdate = ![areaBaseValue2 isEqualToNumber:baseValue];
     }

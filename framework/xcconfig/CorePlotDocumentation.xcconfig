@@ -1,0 +1,4 @@
+PRODUCT_NAME = $(TARGET_NAME)
+ENABLE_USER_SCRIPT_SANDBOXING = NO
+
+DOXYGEN_PATH = /Applications/Doxygen.app/Contents/Resources/doxygen

@@ -24,6 +24,8 @@
 /** @brief Immutable wrapper for various text style properties.
  *
  *  If you need to customize properties, you should create a CPTMutableTextStyle.
+ *
+ *  @see @ref "CPTTextStyle(CPTPlatformSpecificTextStyleExtensions)"
  **/
 
 @implementation CPTTextStyle
@@ -56,7 +58,7 @@
 @synthesize textAlignment;
 
 /** @property NSLineBreakMode lineBreakMode
- *  @brief The line break mode used when laying out the text. Default is @link NSParagraphStyle::NSLineBreakByWordWrapping NSLineBreakByWordWrapping @endlink.
+ *  @brief The line break mode used when laying out the text. Default is #NSLineBreakByWordWrapping.
  **/
 @synthesize lineBreakMode;
 
@@ -106,7 +108,7 @@
  *  - @ref fontSize = @num{12.0}
  *  - @ref color = opaque black
  *  - @ref textAlignment = #CPTTextAlignmentLeft
- *  - @ref lineBreakMode = @link NSParagraphStyle::NSLineBreakByWordWrapping NSLineBreakByWordWrapping @endlink
+ *  - @ref lineBreakMode = #NSLineBreakByWordWrapping
  *
  *  @return The initialized object.
  **/

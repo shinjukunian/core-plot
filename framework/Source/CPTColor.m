@@ -119,7 +119,7 @@
 
 /** @property BOOL opaque
  *  @brief If @YES, the color is completely opaque.
- */
+ **/
 @dynamic opaque;
 
 #pragma mark -
@@ -451,7 +451,7 @@
 
 /** @brief Creates and returns a new CPTColor instance initialized with the provided platform-native color.
  *
- *  The color can be a dynamic system color or catalog color. This adds support for Dark Mode in iOS13.
+ *  The color can be a dynamic system color or catalog color. This adds support for Dark Mode in iOS 13.
  *
  *  @param  newColor The color to wrap.
  *  @return          A new CPTColor instance initialized with the provided platform-native color.
@@ -646,7 +646,7 @@
 /** @brief Returns an object initialized from data in a given unarchiver.
  *  @param  coder An unarchiver object.
  *  @return       An object initialized from data in a given unarchiver.
- */
+ **/
 -(nullable instancetype)initWithCoder:(nonnull NSCoder *)coder
 {
     if ((self = [super init])) {
